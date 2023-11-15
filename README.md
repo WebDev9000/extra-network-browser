@@ -6,7 +6,7 @@ Easily choose a LoRA, HyperNetwork, Embedding, Checkpoint, or Style visually and
 
 Advantages over the Extra Network Tabs:
 
-* Great for UI's like ComfyUI when used with nodes like [Lora Tag Loader](https://github.com/badjeff/comfyui_lora_tag_loader/){:target="_blank"} or [ComfyUI Prompt Control](https://github.com/asagi4/comfyui-prompt-control){:target="_blank"}.
+* Great for UI's like ComfyUI when used with nodes like [Lora Tag Loader](https://github.com/badjeff/comfyui_lora_tag_loader/) or [ComfyUI Prompt Control](https://github.com/asagi4/comfyui-prompt-control).
 * Considerably faster, loads thousands of LoRA in a flash.
 * A Styles tab that parses a styles CSV for thumbnail previews just like networks.
 * Keywords in the filename inside brackets [ ]'s are copied along with the LoRA trigger.
