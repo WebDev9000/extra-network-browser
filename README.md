@@ -17,21 +17,31 @@ Advantages over the Extra Network Tabs:
 
 This project is very much primarily a personal project that's being shared. As such, setup is a little raw but also fairly straight-forward.
 
-1) You must have Node.JS and NPM installed.
-2) Clone (or download) this repo and cd into the newly created folder.
-3) cd api && node index. *(this starts the backend that'll deal with the filesystem)*
-4) In another terminal: cd app && npm run build *(The React frontend - you only need to build **once** per update)*
-5) npm run preview *(or serve the dist folder with the webserver of your choice, such as nginx)*
+1) You must have [Node.JS](https://nodejs.org/en) installed. (I recommend the LTS)
+2) clone (or download) this repo and cd into the newly created folder.
+3) cd api && npm install *(once)*
+4) From api folder: node index. *(this starts the backend that'll deal with the filesystem)*
+
+5) In another terminal: cd app && npm install *(once)*
+6) From app folder: npm run build *(The React frontend - you only need to build **once** per update)*
+7) From app folder: npm run preview *(or serve the dist folder with the webserver of your choice, such as nginx)*
+
+From here on, you can just use `node index` from the api folder to start the backend, and `npm run preview` from the app folder to start the frontend.
 
 In addition, the following **must** be be done once:
 
 1) cd api/networks
+
 2) symlink your WebUI or other existing model folders to the following names: `lora`, `checkpoints`, `hypernets`, `styles`
+
 3) symlink your WebUI styles.csv to the root of the networks folder.
 
 ***OR***
 
+1) cd api/networks
+
 2) create the folders: `lora`, `checkpoints`, `embeddings`, `hypernets`, `styles`, and populate with your files.
+
 3) create the file styles.csv with *(only)* `name,prompt` on the first line, following the format listed below.
 
 <details>
