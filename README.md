@@ -55,7 +55,7 @@ ln -s ~/webui/styles.csv styles.csv
 
 ## How to Use / Examples:
 
-Filenames following the suggested naming convention are ***optional***, but to get the full convience of the Extra Network Browser, the following format is suggested:
+Filenames following the suggested naming convention are ***optional***, but to get the full convivence of the Extra Network Browser, the following format is suggested:
 
 ``` ini
 name_v1_author [keyword1, keyword2] [keyword3, keyword4] (suggested model) {weight1-weight2} #tag1 #tag2.safetensors
@@ -73,7 +73,7 @@ will copy to the clipboard:
 
 with the needed ***keywords and suggested weight ready to go!***
 
-This is based on my personal naming perferences and has worked well for manging a large collection.<br />
+This is based on my personal naming preferences and has worked well for managing a large collection.<br />
 If you choose to follow a different naming convention without keywords or weights, the program will still simply copy ```<lora:LoraName:1.0>``` to the clipboard.
 
 ---
@@ -86,7 +86,7 @@ will copy to the clipboard:
 
 `anotherlora, \(awesome:1.4\), anotherkeyword <lora:nother-lora_v1_johndoe [anotherlora, (awesome:1.4}] [anotherkeyword] (RevAnimated) {1.0} #style:1.0>`
 
-Note the ( )'s properly escaped and ©️ replaced by : (because : can't be in a filename).  I've found this very useful when dealing with keywords that have suggeted weights.
+Note the ( )'s properly escaped and ©️ replaced by : (because : can't be in a filename).  I've found this very useful when dealing with keywords that have suggested weights.
 
 Without a weight or range, it will default to :1.0.
 
