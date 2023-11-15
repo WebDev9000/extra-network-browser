@@ -28,20 +28,18 @@ This project is very much primarily a personal project that's being shared. As s
 
 From here on, you can just use `node index` from the api folder to start the backend, and `npm run preview` from the app folder to start the frontend.
 
-In addition, the following **must** be be done once:
+---
+
+In addition, the following must be be done once:
 
 1) cd api/networks
-
 2) symlink your WebUI or other existing model folders to the following names: `lora`, `checkpoints`, `hypernets`, `styles`
-
 3) symlink your WebUI styles.csv to the root of the networks folder.
 
 ***OR***
 
 1) cd api/networks
-
 2) create the folders: `lora`, `checkpoints`, `embeddings`, `hypernets`, `styles`, and populate with your files.
-
 3) create the file styles.csv with *(only)* `name,prompt` on the first line, following the format listed below.
 
 <details>
