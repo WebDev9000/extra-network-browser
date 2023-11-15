@@ -1,5 +1,7 @@
 # Extra Network Browser
 
+![screenshot](screenshot.png)
+
 Inspired by the Extra Network tabs in Automatic1111's WebUI, Extra Network Browser is a stand-alone take on the concept with additional features.
 
 Easily choose a LoRA, HyperNetwork, Embedding, Checkpoint, or Style visually and copy the trigger, keywords, and suggested weight *to the clipboard* for easy pasting into the application of your choice.
@@ -63,6 +65,8 @@ ln -s ~/webui/styles.csv styles.csv
 
 ## How to Use / Examples:
 
+![menu](menu.png)
+
 Filenames following the suggested naming convention are ***optional***, but to get the full convivence of the Extra Network Browser, the following format is suggested:
 
 ``` ini
@@ -97,6 +101,8 @@ will copy to the clipboard:
 Note the ( )'s properly escaped and ©️ replaced by : (because : can't be in a filename).  I've found this very useful when dealing with keywords that have suggested weights.
 
 Without a weight or range, it will default to :1.0.
+
+![howto gif](howto.gif)
 
 ---
 
