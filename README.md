@@ -35,7 +35,7 @@ From here on, you can just use `node index` from the api folder to start the bac
 In addition, the following must be be done once:
 
 1) cd api/networks
-2) symlink your WebUI or other existing model folders to the following names: `lora`, `checkpoints`, `hypernets`, `styles`
+2) symlink your WebUI or other existing model folders to the following names: `lora`, `checkpoints`, `embeddings`, `hypernets`, `styles`
 3) symlink your WebUI styles.csv to the root of the networks folder.
 
 ***OR***
