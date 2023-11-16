@@ -73,11 +73,15 @@ Filenames following the suggested naming convention are ***optional***, but to g
 name_v1_author [keyword1, keyword2] [keyword3, keyword4] (suggested model) {weight1-weight2} #tag1 #tag2.safetensors
 ```
 
-With matching files of the same name ending in **.jpeg** in the same folder.
+With matching files of the same name ending in **.jpeg** in the same folder, max height 336px.  *(Width is auto-cropped to center at 224px)*
 
 ### Why only .JPEG?
 
 Currently this is to keep the file scanning time fast, and the image loading and memory requirements low.  Using a single format means the application doesn't need to check for multiple possible formats per LoRA/checkpoint/etc, or load much larger PNG files.
+
+*Want to use .jpg, .png, or something else?  Simply modify `api/index.js` and change `.jpeg`, around lines 45 and 83.*
+
+<br />
 
 Formats such as .PNG can be mass converted while leaving the originals intact using [ImageMagick](https://imagemagick.org) like so:
 
@@ -85,11 +89,12 @@ Formats such as .PNG can be mass converted while leaving the originals intact us
 magick mogrify -format jpeg *.png
 ```
 
-<br />
+---
 
-**Example, A LoRA named:**
+### Usage example, the LoRA / image pair:
 
-`example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8} #style.safetensors`
+`api/networks/lora/example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8} #style.safetensors`<br />
+`api/networks/lora/example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8} #style.jpeg`
 
 will copy to the clipboard:
 
@@ -102,9 +107,10 @@ If you choose to follow a different naming convention without keywords or weight
 
 ---
 
-**Another example, Keywords with Weights:**
+### Another example, Keywords with Weights:
 
-`example-lora_v1_johndoe [anotherlora, (awesome:1©️4}] [anotherkeyword] (RevAnimated) {1.0} #style.safetensors`
+`api/networks/lora/example-lora_v1_johndoe [anotherlora, (awesome:1©️4}] [anotherkeyword] (RevAnimated) {1.0} #style.safetensors`<br />
+`api/networks/lora/example-lora_v1_johndoe [anotherlora, (awesome:1©️4}] [anotherkeyword] (RevAnimated) {1.0} #style.jpeg`
 
 will copy to the clipboard:
 
@@ -141,7 +147,7 @@ Some LoRA have multiple possible characters, outfits, or activations attached.  
 
 For that reason I recommend storing activations for LoRA with many keywords in your Styles.csv, either the one created by Auto's WebUI or manually created.
 
-Each entry (name, prompt) in the file then becomes a card, just like LoRA, checkpoints, etc. for easy copying of the keywords to the clipboard.
+Each entry (name, prompt) in the file then becomes a card, just like LoRA, checkpoints, etc. for easy use.  Simply add a .JPEG file matching each name field to the `api/networks/styles` folder for the preview, and the prompt field will be copied to the clipboard on click.
 
 **The suggested format for styles.csv is:**
 
@@ -158,6 +164,10 @@ My-LoRA (John Doe) - Style 1, "keyword1, additional keywords, etc"
 My-LoRA (John Doe) - Style 2, "keyword2, additional keywords, etc"
 ```
 
-**The file must be in the UTF-8 encoding**, not UTF-8 BOM.
-
+**The file must be in the UTF-8 encoding**, not UTF-8 BOM.<br />
 Double check your file if it was created by the WebUI.  It should still work fine with the WebUI as UTF-8.
+
+In this example, your matching image files in `api/networks/styles` would be:
+
+`api/networks/styles/My-LoRA (John Doe) - Style 1.jpeg`<br/>
+`api/networks/styles/My-LoRA (John Doe) - Style 2.jpeg`
