@@ -73,9 +73,21 @@ Filenames following the suggested naming convention are ***optional***, but to g
 name_v1_author [keyword1, keyword2] [keyword3, keyword4] (suggested model) {weight1-weight2} #tag1 #tag2.safetensors
 ```
 
+With matching files of the same name ending in **.jpeg** in the same folder.
+
+### Why only .JPEG?
+
+Currently this is to keep the file scanning time fast, and the image loading and memory requirements low.  Using a single format means the application doesn't need to check for multiple possible formats per LoRA/checkpoint/etc, or load much larger PNG files.
+
+Formats such as .PNG can be mass converted while leaving the originals intact using [ImageMagick](https://imagemagick.org) like so:
+
+```
+magick mogrify -format jpeg *.png
+```
+
 <br />
 
-**For example, A LoRA named:**
+**Example, A LoRA named:**
 
 `example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8} #style.safetensors`
 
@@ -145,3 +157,7 @@ name,prompt
 My-LoRA (John Doe) - Style 1, "keyword1, additional keywords, etc"
 My-LoRA (John Doe) - Style 2, "keyword2, additional keywords, etc"
 ```
+
+**The file must be in the UTF-8 encoding**, not UTF-8 BOM.
+
+Double check your file if it was created by the WebUI.  It should still work fine with the WebUI as UTF-8.
