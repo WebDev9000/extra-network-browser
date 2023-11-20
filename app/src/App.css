@@ -70,7 +70,8 @@
   height: 100%;
 }
 
-.imgCard:hover > .nameplate {
+.imgCard:hover > .nameplate,
+.imgCard:hover > .imgFolder {
   display: block;
 }
 
@@ -98,6 +99,15 @@
   display: none;
 }
 
+.modalContent {
+  outline: none;
+}
+
+.modalHeader {
+  text-align: center;
+  word-break: break-word;
+  max-width: 2545px;
+}
 
 /* Loading.io/css - CC0 */
 .lds-ellipsis {

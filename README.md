@@ -14,6 +14,7 @@ Advantages over the Extra Network Tabs:
 * Keywords in the filename inside brackets [ ]'s are copied along with the LoRA trigger.
 * Weights placed in braces { }'s *(eg {1.0} or {0.7-0.8})* in the filename are automatically set in the LoRA's trigger.
 * Some characters not compatible with filenames are automatically converted from placeholders, such as ©️ to : *(see Keywords with Weights below)*
+* Support for multiple images per LoRA/Checkpoint etc in a modal gallery. Hover over a card and click the folder icon.
 
 ## Installation / Setup
 
@@ -75,11 +76,15 @@ name_v1_author [keyword1, keyword2] [keyword3, keyword4] (suggested model) {weig
 
 With matching files of the same name ending in **.jpeg** in the same folder, max height 336px.  *(Width is auto-cropped to center at 224px)*
 
+Saving additional images as `filename. (1).jpeg`, `filename. (2).jpeg` and so on will populate a modal gallery popup.  You can then navigate to the prev / next network card with the left / right arrow keys while the modal is open.
+
+To quickly rename a batch of images in this pattern in Windows, select multiple images, then rename them as `filename..jpeg` (two dots) -- windows will automatically add ` (1)`, ` (2)` and so on.
+
 ### Why only .JPEG?
 
 Currently this is to keep the file scanning time fast, and the image loading and memory requirements low.  Using a single format means the application doesn't need to check for multiple possible formats per LoRA/checkpoint/etc, or load much larger PNG files.
 
-*Want to use .jpg, .png, or something else?  Simply modify `api/index.js` and change `.jpeg`, around lines 45 and 83.*
+*Want to use .jpg, .png, or something else?  Simply modify `api/index.js` and change `const imgExt = 'jpeg`, around line 7.*
 
 <br />
 

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
+import { useState, useEffect, useRef } from 'react'
 import { debounce } from 'lodash'
+import axios from 'axios'
+import ReactModal from 'react-modal'
 import Image from "./Image"
 
 export default function GetImages() {
@@ -10,6 +11,33 @@ export default function GetImages() {
 	const [error, setError] = useState(false)
 	const [sort, setSort] = useState('modified')
 	const [type, setType] = useState('lora')
+
+	const [modalIsOpen, setIsOpen] = useState(false)
+	const [moreImages, setMoreImages] = useState([])
+	const [moreLoading, setMoreLoading] = useState(true)
+	const [moreError, setMoreError] = useState(false)
+	const [moreIndex, setMoreIndex] = useState(null)
+
+	const inputReference = useRef(null)
+
+	ReactModal.setAppElement('#root')
+
+	const customModalStyle = {
+		overlay: {
+			backgroundColor: 'rgba(0,0,0,0.97)',
+		},
+		content: {
+			maxWidth: '2545px',
+			top: '50%',
+			left: '50%',
+			right: 'auto',
+			bottom: 'auto',
+			marginRight: '-50%',
+			transform: 'translate(-50%, -50%)',
+			backgroundColor: 'rgba(0,0,0,0.25)',
+			border: 'none',
+		},
+	}
 
 	const sortImages = (dataArray) => {
 		dataArray.sort(function(a, b){
@@ -34,10 +62,45 @@ export default function GetImages() {
 		setType(typeOption)
 	}
 
+	const openModal = () => {
+		setIsOpen(true)
+	}
+
+	const closeModal = () => {
+		setIsOpen(false)
+	}
+
+	const handleFolderClick = (index) => {
+		if (moreIndex == index) {
+			openModal()
+		} else {
+			setMoreLoading(true)
+			openModal()
+			setMoreIndex(index)
+		}
+	}
+
+	const handleModalKeys = (event) => {
+		if (event.key == "ArrowLeft") {
+			if (moreIndex > 0) {
+				setMoreLoading(true)
+				setMoreIndex(moreIndex - 1)
+			}
+		}
+		if (event.key == "ArrowRight") {
+			if (moreIndex+1 < images.length) {
+				setMoreLoading(true)
+				setMoreIndex(moreIndex + 1)
+			}
+		}
+	}
+
 	useEffect(() => {
 		const fetchImages = () => {
-			setImages([])
 			setLoading(true)
+			setMoreLoading(true)
+			setImages([])
+			setMoreImages([])
 			axios.get(`http://localhost:3000/images?type=${type}&search=${searchTerm}`)
 				.then(response => {
 					if (sort != "name") {
@@ -57,6 +120,37 @@ export default function GetImages() {
 
 		fetchImages()
 	}, [searchTerm, sort, type])
+
+	useEffect(() => {
+		const fetchMoreImages = () => {
+			setMoreLoading(true)
+			setMoreImages([])
+
+			const image = images[moreIndex]
+			const query = encodeURIComponent(image.path + image.filename)
+
+			axios.get(`http://localhost:3000/moreImages?search=${query}`)
+				.then(response => {
+					setMoreLoading(false)
+					setMoreError(false)
+					if (sort != "name") {
+						setMoreImages(sortImages(response.data))
+					} else {
+						setMoreImages(response.data)
+					}
+					openModal()
+				})
+				.catch(err => {
+					console.log(err)
+					setMoreLoading(false)
+					setMoreError(true)
+				})
+		}
+
+		if (moreIndex != null) {
+			fetchMoreImages()
+		}
+	}, [moreIndex])
 
 	return (
 		<>
@@ -81,9 +175,36 @@ export default function GetImages() {
 					{loading && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
 					{error && <h2>There was an error loading the images.</h2>}
 					{!loading && !error && images.map((image, index) => (
-						<Image key={index} index={index} {...image} />
+						<Image key={index} index={index} {...image} onFolderClick={handleFolderClick} />
 					))}
 				</div>
+				<ReactModal
+					isOpen={modalIsOpen}
+					onAfterOpen={() => { inputReference.current.focus() }}
+					onRequestClose={closeModal}
+					preventScroll={true}
+					style={customModalStyle}
+				>
+					<div
+						ref={inputReference}
+						tabIndex="-1" // Enables key handlers on div
+						onKeyDown={handleModalKeys}
+						className="modalContent"
+					>
+						{moreLoading && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
+						{moreError && <h2>There was an error loading the images.</h2>}
+						{!moreLoading && !moreError && <div className="modalHeader" style={{width: `calc(224px * ${moreImages.length})`}}>{images[moreIndex].path + images[moreIndex].filename}</div>}
+						{!moreLoading && !moreError && moreImages.map((image, index) => (
+							<div key={index+1000000} className="imgCard" onClick={() => {navigator.clipboard.writeText(images[moreIndex].prompt)}}>
+								<img width="224" height="336"
+									src={"http://localhost:3000/" + image.path + encodeURIComponent(image.filename)}
+									loading={index <= 60 ? "eager" : "lazy"}
+									title={image.filename}
+								/>
+							</div>
+						))}
+					</div>
+				</ReactModal>
 			</div>
 		</>
 	)

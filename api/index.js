@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 const path = require('path')
 const fg = require('fast-glob')
+
 const port = 3000
+const imgExt = 'jpeg'
 
 app.use(express.urlencoded({ extended: true }))
 
@@ -42,7 +44,7 @@ app.get('/images', (req, res) => {
       .pipe(parse({ delimiter: ',', columns: true, trim: true }))
       .on('data', (row) => {
         let imageData = {
-          filename: row.name + ".jpeg",
+          filename: row.name + "." + imgExt,
           path: "styles/",
           name: row.name,
           author: null,
@@ -80,7 +82,7 @@ app.get('/images', (req, res) => {
       // "name1-name2_author [keyword1, keyword2] [keyword3, keyword4] (model) {weight1-weight2} #tag1 #tag2.jpeg"
 
       let filematch = file.name.match(/(.*)\.(safetensors|ckpt|pt|bin)$/)
-      filename = filematch ? filematch[1] + ".jpeg" : ""
+      filename = filematch ? filematch[1] + "." + imgExt : ""
       let noext = filematch ? filematch[1] : ""
       let words = noext.split(' ')
       let path = file.path.replace(file.name, '').replace('networks/', '').toLowerCase()
@@ -96,13 +98,13 @@ app.get('/images', (req, res) => {
       let keywords = filename.match(/\[(.*)\]/)
       if (keywords) {
         keywords = keywords[1]
-        keywords = keywords.replace(/©️/g, ':')
-        keywords = keywords.replace(/≻/g, '>')
-        keywords = keywords.replace(/≺/g, '<')
-        keywords = keywords.replace(/\(/g, '\\(')
-        keywords = keywords.replace(/\)/g, '\\)')
-        keywords = keywords.replace('[', '')
-        keywords = keywords.replace(']', ', ')
+        keywords = keywords.replaceAll(/©️/g, ':')
+        keywords = keywords.replaceAll(/≻/g, '>')
+        keywords = keywords.replaceAll(/≺/g, '<')
+        keywords = keywords.replaceAll(/\(/g, '\\(')
+        keywords = keywords.replaceAll(/\)/g, '\\)')
+        keywords = keywords.replaceAll('[', '')
+        keywords = keywords.replaceAll(']', ', ')
       }
 
       let prompt = null
@@ -130,6 +132,42 @@ app.get('/images', (req, res) => {
     })
     res.json(images)
   }
+})
+
+// Endpoint to return images
+app.get('/moreImages', (req, res) => {
+
+  const search = req.query.search || res.status(400).send({
+    message: 'Missing query.'
+  });
+
+  const noext = search.replace('.' + imgExt, '')
+    .replaceAll('$','\\$')
+    .replaceAll('^','\\^')
+    .replaceAll('+','\\+')
+    .replaceAll('?','\\?')
+    .replaceAll('(','\\(')
+    .replaceAll(')','\\)')
+    .replaceAll('[','\\[')
+    .replaceAll(']','\\]')
+    .replaceAll('{','\\{')
+    .replaceAll('}','\\}')
+  const query = `networks/${noext}(.*|).${imgExt}`
+  const files = fg.globSync([query], { dot: true, caseSensitiveMatch: false, stats: true })
+
+  const images = files.map(file => {
+    const path = file.path.replace(file.name, '').replace('networks/', '').toLowerCase()
+
+    // This return is for the files map
+    return {
+      filename: file.name,
+      path: path,
+      mtimeMs: file.stats.mtimeMs,
+      mtime: file.stats.mtime,
+    }
+  })
+
+  res.json(images)
 })
 
 app.listen(port, () => {
