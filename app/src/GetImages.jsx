@@ -5,6 +5,7 @@ import ReactModal from 'react-modal'
 import Image from "./Image"
 
 export default function GetImages() {
+	const [render, setRender] = useState(false);
 	const [images, setImages] = useState([])
 	const [searchTerm, setSearchTerm] = useState('')
 	const [loading, setLoading] = useState(true)
@@ -40,13 +41,20 @@ export default function GetImages() {
 	}
 
 	const sortImages = (dataArray) => {
-		dataArray.sort(function(a, b){
-			if (sort == "modified") {
-				return b.mtimeMs - a.mtimeMs
-			} else {
-				return a.filename - b.filename
-			}
-		})
+		if (sort == "random") {
+			for (let i = dataArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [dataArray[i], dataArray[j]] = [dataArray[j], dataArray[i]];
+    	}
+		} else {
+			dataArray.sort(function(a, b){
+				if (sort == "modified") {
+					return b.mtimeMs - a.mtimeMs
+				} else {
+					return a.filename - b.filename
+				}
+			})
+		}
 		return dataArray
 	}
 
@@ -56,6 +64,7 @@ export default function GetImages() {
 
 	const handleSortChange = (sortOption) => {
 		setSort(sortOption)
+		setRender(render => !render);
 	}
 
 	const handleTypeChange = (typeOption) => {
@@ -119,7 +128,7 @@ export default function GetImages() {
     }
 
 		fetchImages()
-	}, [searchTerm, sort, type])
+	}, [searchTerm, type, render])
 
 	useEffect(() => {
 		const fetchMoreImages = () => {
@@ -169,6 +178,7 @@ export default function GetImages() {
 					<div id="sortOptions">
 						<span title="Modified" className="sortOption" onClick={() => handleSortChange("modified")}>M</span>
 						<span title="Name" className="sortOption" onClick={() => handleSortChange("name")}>N</span>
+						<span title="Random" className="sortOption" onClick={() => handleSortChange("random")}>R</span>
 					</div>
 				</div>
 				<div>
