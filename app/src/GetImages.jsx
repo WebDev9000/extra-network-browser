@@ -157,18 +157,18 @@ export default function GetImages() {
 			<div>
 				<div id="search">
 				<div id="typeOptions">
-						<span className="typeOption" onClick={() => handleTypeChange("lora")}>L</span>
-						<span className="typeOption" onClick={() => handleTypeChange("styles")}>S</span>
-						<span className="typeOption" onClick={() => handleTypeChange("embeddings")}>E</span>
-						<span className="typeOption" onClick={() => handleTypeChange("hypernets")}>H</span>
-						<span className="typeOption" onClick={() => handleTypeChange("checkpoints")}>C</span>
+						<span title="Lora" className="typeOption" onClick={() => handleTypeChange("lora")}>L</span>
+						<span title="Style" className="typeOption" onClick={() => handleTypeChange("styles")}>S</span>
+						<span title="Embedding" className="typeOption" onClick={() => handleTypeChange("embeddings")}>E</span>
+						<span title="HyperNetwork" className="typeOption" onClick={() => handleTypeChange("hypernets")}>H</span>
+						<span title="Checkpoint" className="typeOption" onClick={() => handleTypeChange("checkpoints")}>C</span>
 					</div>
 					<input id="imgSearch" icon='search' placeholder='Search...'
 						onChange={handleSearchInputChange}
 					/>
 					<div id="sortOptions">
-						<span className="sortOption" onClick={() => handleSortChange("modified")}>M</span>
-						<span className="sortOption" onClick={() => handleSortChange("name")}>N</span>
+						<span title="Modified" className="sortOption" onClick={() => handleSortChange("modified")}>M</span>
+						<span title="Name" className="sortOption" onClick={() => handleSortChange("name")}>N</span>
 					</div>
 				</div>
 				<div>
