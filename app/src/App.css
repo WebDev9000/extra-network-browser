@@ -53,6 +53,11 @@
   border: 1px solid #555;
 }
 
+.highlight {
+  color: #666666;
+  border: 1px solid #444;
+}
+
 .imgCard {
   position: relative;
   float: left;

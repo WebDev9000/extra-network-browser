@@ -166,19 +166,19 @@ export default function GetImages() {
 			<div>
 				<div id="search">
 				<div id="typeOptions">
-						<span title="Lora" className="typeOption" onClick={() => handleTypeChange("lora")}>L</span>
-						<span title="Style" className="typeOption" onClick={() => handleTypeChange("styles")}>S</span>
-						<span title="Embedding" className="typeOption" onClick={() => handleTypeChange("embeddings")}>E</span>
-						<span title="HyperNetwork" className="typeOption" onClick={() => handleTypeChange("hypernets")}>H</span>
-						<span title="Checkpoint" className="typeOption" onClick={() => handleTypeChange("checkpoints")}>C</span>
+						<span title="Lora" className={`typeOption ${type == "lora" ? "highlight" : ""}`} onClick={() => handleTypeChange("lora")}>L</span>
+						<span title="Style" className={`typeOption ${type == "styles" ? "highlight" : ""}`} onClick={() => handleTypeChange("styles")}>S</span>
+						<span title="Embedding" className={`typeOption ${type == "embeddings" ? "highlight" : ""}`} onClick={() => handleTypeChange("embeddings")}>E</span>
+						<span title="HyperNetwork" className={`typeOption ${type == "hypernets" ? "highlight" : ""}`} onClick={() => handleTypeChange("hypernets")}>H</span>
+						<span title="Checkpoint" className={`typeOption ${type == "checkpoints" ? "highlight" : ""}`} onClick={() => handleTypeChange("checkpoints")}>C</span>
 					</div>
 					<input id="imgSearch" icon='search' placeholder='Search...'
 						onChange={handleSearchInputChange}
 					/>
 					<div id="sortOptions">
-						<span title="Modified" className="sortOption" onClick={() => handleSortChange("modified")}>M</span>
-						<span title="Name" className="sortOption" onClick={() => handleSortChange("name")}>N</span>
-						<span title="Random" className="sortOption" onClick={() => handleSortChange("random")}>R</span>
+						<span title="Modified" className={`sortOption ${sort == "modified" ? "highlight" : ""}`} onClick={() => handleSortChange("modified")}>M</span>
+						<span title="Name" className={`sortOption ${sort == "name" ? "highlight" : ""}`} onClick={() => handleSortChange("name")}>N</span>
+						<span title="Random" className={`sortOption ${sort == "random" ? "highlight" : ""}`} onClick={() => handleSortChange("random")}>R</span>
 					</div>
 				</div>
 				<div>
