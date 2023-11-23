@@ -9,12 +9,13 @@ Easily choose a LoRA, HyperNetwork, Embedding, Checkpoint, or Style visually and
 Advantages over the Extra Network Tabs:
 
 * Great for UI's like ComfyUI when used with nodes like [Lora Tag Loader](https://github.com/badjeff/comfyui_lora_tag_loader/) or [ComfyUI Prompt Control](https://github.com/asagi4/comfyui-prompt-control).
-* Considerably faster, loads thousands of LoRA in a flash.
-* A Styles tab that parses a styles CSV for thumbnail previews just like networks.
-* Keywords in the filename inside brackets [ ]'s are copied along with the LoRA trigger.
-* Weights placed in braces { }'s *(eg {1.0} or {0.7-0.8})* in the filename are automatically set in the LoRA's trigger.
-* Some characters not compatible with filenames are automatically converted from placeholders, such as ©️ to : *(see Keywords with Weights below)*
-* Support for multiple images per LoRA/Checkpoint etc in a modal gallery. Hover over a card and click the folder icon.
+* Considerably faster, loads thousands of LoRA.
+* A Styles tab that parses a styles CSV for thumbnail previews just like networks. [info](#styles)
+* Keywords in the filename inside brackets [ ]'s are copied along with the LoRA trigger. [info](#keywords)
+* Weights placed in braces { }'s *(eg {1.0} or {0.7-0.8})* in the filename are automatically set in the LoRA's trigger. [info](#weights)
+* Some characters not compatible with filenames are automatically converted from placeholders, such as ©️ to : *(for keywords with weights)* [info](#weights)
+* Support for multiple images per LoRA/Checkpoint etc in a modal gallery. Hover over a card and click the folder icon. [info](#modal)
+* Support for companion .txt files to store descriptions, notes, and sample prompts. Hover over a card and click the document icon. [info](#modal)
 
 ## Installation / Setup
 
@@ -64,7 +65,7 @@ ln -s ~/webui/styles.csv styles.csv
 ```
 </details>
 
-## How to Use / Examples:
+## How to Use:
 
 ![menu](menu.png)
 
@@ -75,10 +76,12 @@ name_v1_author [keyword1, keyword2] [keyword3, keyword4] (suggested model) {weig
 ```
 
 With matching files of the same name ending in **.jpeg** in the same folder, max height 336px.  *(Width is auto-cropped to center at 224px)*
-
+<a id="modal"></a>
 Saving additional images as `filename. (1).jpeg`, `filename. (2).jpeg` and so on will populate a modal gallery popup.  You can then navigate to the prev / next network card with the left / right arrow keys while the modal is open.
 
 To quickly rename a batch of images in this pattern in Windows, select multiple images, then rename them as `filename..jpeg` (two dots) -- windows will automatically add ` (1)`, ` (2)` and so on.
+
+Finally, add a `filename.txt` file in the same folder for a quick info modal.  Great for storing descriptions, notes, and sample prompts.  You can switch between the modal gallery and the modal notes with the up / down arrow keys while the modal is open.
 
 ### Why only .JPEG?
 
@@ -95,8 +98,14 @@ magick mogrify -format jpeg *.png
 ```
 
 ---
+## Examples:
 
-### Usage example, the LoRA / image pair:
+![howto gif](howto.gif)
+
+---
+
+<a id="keywords"></a>
+### the LoRA / image pair:
 
 `api/networks/lora/example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8} #style.safetensors`<br />
 `api/networks/lora/example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8} #style.jpeg`
@@ -112,6 +121,7 @@ If you choose to follow a different naming convention without keywords or weight
 
 ---
 
+<a id="weights"></a>
 ### Another example, Keywords with Weights:
 
 `api/networks/lora/example-lora_v1_johndoe [anotherlora, (awesome:1©️4}] [anotherkeyword] (RevAnimated) {1.0} #style.safetensors`<br />
@@ -125,9 +135,9 @@ Note the ( )'s properly escaped and ©️ replaced by : (because : can't be in a
 
 Without a weight or range, it will default to :1.0.
 
-![howto gif](howto.gif)
+**ComfyUI Users:** Please note that as of this writing, when loading a LoRA via prompt using the [ComfyUI Prompt Control](https://github.com/asagi4/comfyui-prompt-control) nodes, braces { } in the filename are incompatible even when escaped.  To address this I've made a small custom input node that disables "Dynamic Prompts", which I plan to release soon.
 
----
+## Misc
 
 ### Other Networks:
 
@@ -146,6 +156,7 @@ then press enter.
 
 ---
 
+<a id="styles"></a>
 ### Styles:
 
 Some LoRA have multiple possible characters, outfits, or activations attached.  Managing all of this in the filename is impractical, and sometimes impossible due to filename length limits.
