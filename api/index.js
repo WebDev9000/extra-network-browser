@@ -8,17 +8,17 @@ const imgExt = 'jpeg'
 
 app.use(express.urlencoded({ extended: true }))
 
-app.use('/lora', express.static('networks/lora'))
-app.use('/styles', express.static('networks/styles'))
-app.use('/checkpoints', express.static('networks/checkpoints'))
-app.use('/embeddings', express.static('networks/embeddings'))
-app.use('/hypernets', express.static('networks/hypernets'))
-
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next()
 })
+
+app.use('/lora', express.static('networks/lora'))
+app.use('/styles', express.static('networks/styles'))
+app.use('/checkpoints', express.static('networks/checkpoints'))
+app.use('/embeddings', express.static('networks/embeddings'))
+app.use('/hypernets', express.static('networks/hypernets'))
 
 // Endpoint to return images
 app.get('/images', (req, res) => {

@@ -76,7 +76,8 @@
 }
 
 .imgCard:hover > .nameplate,
-.imgCard:hover > .imgFolder {
+.imgCard:hover > .imgFolder,
+.imgCard:hover > .imgDocument {
   display: block;
 }
 
@@ -104,6 +105,16 @@
   display: none;
 }
 
+.imgDocument {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  padding: 2px;
+  font-size: 2em;
+  text-shadow: 1px 1px black;
+  display: none;
+}
+
 .modalContent {
   outline: none;
 }
@@ -112,6 +123,11 @@
   text-align: center;
   word-break: break-word;
   max-width: 2545px;
+}
+
+.moreDocument pre {
+  text-wrap: wrap;
+  word-break: break-word;
 }
 
 /* Loading.io/css - CC0 */

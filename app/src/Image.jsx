@@ -7,6 +7,7 @@ export default function Image(props) {
 				title={props.path + props.filename}
 			/>
 			<div className="imgFolder" onClick={() => props.onFolderClick(props.index)}>📁</div>
+			<div className="imgDocument" onClick={() => props.onDocumentClick(props.index)}>📄</div>
 			<div className="nameplate">
 				{props.name || props.filename}
 			</div>

@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useReducer } from 'react'
 import { debounce } from 'lodash'
 import axios from 'axios'
 import ReactModal from 'react-modal'
 import Image from "./Image"
 
 export default function GetImages() {
-	const [render, setRender] = useState(false);
 	const [images, setImages] = useState([])
 	const [searchTerm, setSearchTerm] = useState('')
 	const [loading, setLoading] = useState(true)
@@ -13,11 +12,13 @@ export default function GetImages() {
 	const [sort, setSort] = useState('modified')
 	const [type, setType] = useState('lora')
 
+	const [renderMore, setRenderMore] = useState(false);
 	const [modalIsOpen, setIsOpen] = useState(false)
 	const [moreImages, setMoreImages] = useState([])
 	const [moreLoading, setMoreLoading] = useState(true)
 	const [moreError, setMoreError] = useState(false)
 	const [moreIndex, setMoreIndex] = useState(null)
+	const [moreDocument, setMoreDocument] = useState(null)
 
 	const inputReference = useRef(null)
 
@@ -58,13 +59,60 @@ export default function GetImages() {
 		return dataArray
 	}
 
+	const fetchImages = () => {
+		setLoading(true)
+		setMoreLoading(true)
+		setImages([])
+		setMoreImages([])
+		axios.get(`http://localhost:3000/images?type=${type}&search=${searchTerm}`)
+			.then(response => {
+				if (sort != "name") {
+					setImages(sortImages(response.data))
+				} else {
+					setImages(response.data)
+				}
+				setLoading(false)
+				setError(false)
+			})
+			.catch(err => {
+				console.log(err)
+				setLoading(false)
+				setError(true)
+			})
+	}
+
+	const fetchMoreImages = () => {
+		setMoreLoading(true)
+		setMoreImages([])
+
+		const image = images[moreIndex]
+		const query = encodeURIComponent(image.path + image.filename)
+
+		axios.get(`http://localhost:3000/moreImages?search=${query}`)
+			.then(response => {
+				setMoreLoading(false)
+				setMoreError(false)
+				if (sort != "name") {
+					setMoreImages(sortImages(response.data))
+				} else {
+					setMoreImages(response.data)
+				}
+				openModal()
+			})
+			.catch(err => {
+				console.log(err)
+				setMoreLoading(false)
+				setMoreError(true)
+			})
+	}
+
 	const handleSearchInputChange = debounce((e) => {
 		setSearchTerm(e.target.value)
 	}, 500)
 
 	const handleSortChange = (sortOption) => {
 		setSort(sortOption)
-		setRender(render => !render);
+		fetchImages()
 	}
 
 	const handleTypeChange = (typeOption) => {
@@ -80,86 +128,83 @@ export default function GetImages() {
 	}
 
 	const handleFolderClick = (index) => {
-		if (moreIndex == index) {
+		if (moreIndex != null && moreIndex == index && !moreDocument) {
 			openModal()
 		} else {
+			setMoreDocument(null)
 			setMoreLoading(true)
-			openModal()
 			setMoreIndex(index)
+			setRenderMore(!renderMore)
+			openModal()
 		}
 	}
 
-	const handleModalKeys = (event) => {
-		if (event.key == "ArrowLeft") {
-			if (moreIndex > 0) {
-				setMoreLoading(true)
-				setMoreIndex(moreIndex - 1)
-			}
-		}
-		if (event.key == "ArrowRight") {
-			if (moreIndex+1 < images.length) {
-				setMoreLoading(true)
-				setMoreIndex(moreIndex + 1)
-			}
-		}
-	}
+	const handleDocumentClick = (index) => {
+		setMoreLoading(true)
+		setMoreImages([])
+		setMoreDocument(null)
 
-	useEffect(() => {
-		const fetchImages = () => {
-			setLoading(true)
-			setMoreLoading(true)
-			setImages([])
-			setMoreImages([])
-			axios.get(`http://localhost:3000/images?type=${type}&search=${searchTerm}`)
-				.then(response => {
-					if (sort != "name") {
-						setImages(sortImages(response.data))
-					} else {
-						setImages(response.data)
-					}
-					setLoading(false)
-					setError(false)
-				})
-				.catch(err => {
-					console.log(err)
-					setLoading(false)
-					setError(true)
-				})
-    }
+		const image = images[index]
+		const file = encodeURIComponent(image.filename.substring(0, image.filename.lastIndexOf('.')) + '.txt')
 
-		fetchImages()
-	}, [searchTerm, type, render])
-
-	useEffect(() => {
-		const fetchMoreImages = () => {
-			setMoreLoading(true)
-			setMoreImages([])
-
-			const image = images[moreIndex]
-			const query = encodeURIComponent(image.path + image.filename)
-
-			axios.get(`http://localhost:3000/moreImages?search=${query}`)
-				.then(response => {
+		axios.get(`http://localhost:3000/${image.path}${file}`)
+			.then(response => {
+				setMoreLoading(false)
+				setMoreError(false)
+				setMoreDocument(response.data)
+				setMoreIndex(index)
+				openModal()
+			})
+			.catch(err => {
+				if (err.response.status == "404") {
 					setMoreLoading(false)
 					setMoreError(false)
-					if (sort != "name") {
-						setMoreImages(sortImages(response.data))
-					} else {
-						setMoreImages(response.data)
-					}
+					setMoreDocument('No additional information found.')
+					setMoreIndex(index)
 					openModal()
-				})
-				.catch(err => {
+				} else {
 					console.log(err)
 					setMoreLoading(false)
 					setMoreError(true)
-				})
-		}
+					openModal()
+				}
+			})
+	}
 
-		if (moreIndex != null) {
+	const handleModalKeys = (event) => {
+		event.stopPropagation()
+		if (event.key == "ArrowLeft") {
+			if (moreIndex > 0) {
+				setMoreLoading(true)
+				setMoreDocument(null)
+				setMoreIndex(moreIndex - 1)
+				setRenderMore(!renderMore)
+			}
+		}	else if (event.key == "ArrowRight") {
+			if (moreIndex+1 < images.length) {
+				setMoreLoading(true)
+				setMoreDocument(null)
+				setMoreIndex(moreIndex + 1)
+				setRenderMore(!renderMore)
+			}
+		}	else if (event.key == "ArrowDown") {
+			handleDocumentClick(moreIndex)
+		} else if (event.key == "ArrowUp") {
+			handleFolderClick(moreIndex)
+		} else if (event.key == "Escape") {
+			closeModal()
+		}
+	}
+
+	useEffect(() => {
+		fetchImages()
+	}, [searchTerm, type])
+
+	useEffect(() => {
+		if (moreIndex) {
 			fetchMoreImages()
 		}
-	}, [moreIndex])
+	}, [renderMore])
 
 	return (
 		<>
@@ -185,7 +230,7 @@ export default function GetImages() {
 					{loading && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
 					{error && <h2>There was an error loading the images.</h2>}
 					{!loading && !error && images.map((image, index) => (
-						<Image key={index} index={index} {...image} onFolderClick={handleFolderClick} />
+						<Image key={index} index={index} {...image} onFolderClick={handleFolderClick} onDocumentClick={handleDocumentClick} />
 					))}
 				</div>
 				<ReactModal
@@ -202,9 +247,9 @@ export default function GetImages() {
 						className="modalContent"
 					>
 						{moreLoading && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
-						{moreError && <h2>There was an error loading the images.</h2>}
-						{!moreLoading && !moreError && <div className="modalHeader" style={{width: `calc(224px * ${moreImages.length})`}}>{images[moreIndex].path + images[moreIndex].filename}</div>}
-						{!moreLoading && !moreError && moreImages.map((image, index) => (
+						{moreError && <h2>There was an error during loading.</h2>}
+						{!moreLoading && !moreError && moreImages[0] && !moreDocument && <div className="modalHeader" style={{width: `calc(224px * ${moreImages.length})`}}>{images[moreIndex].path + images[moreIndex].filename}</div>}
+						{!moreLoading && !moreError && moreImages[0] && !moreDocument && moreImages.map((image, index) => (
 							<div key={index+1000000} className="imgCard" onClick={() => {navigator.clipboard.writeText(images[moreIndex].prompt)}}>
 								<img width="224" height="336"
 									src={"http://localhost:3000/" + image.path + encodeURIComponent(image.filename)}
@@ -213,6 +258,16 @@ export default function GetImages() {
 								/>
 							</div>
 						))}
+						{!moreLoading && !moreError && moreDocument &&
+							<div className="moreDocument">
+								<pre>
+									File: {images[moreIndex].filename}
+									Keywords: {images[moreIndex].keywords}
+									Weight: {images[moreIndex].weight}
+								</pre>
+								<pre>{moreDocument}</pre>
+							</div>
+						}
 					</div>
 				</ReactModal>
 			</div>
