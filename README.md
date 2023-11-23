@@ -14,8 +14,8 @@ Advantages over the Extra Network Tabs:
 * [Keywords](#keywords) in the filename inside brackets [ ]'s are copied along with the LoRA trigger.
 * [Weights](#weights) placed in braces { }'s *(eg {1.0} or {0.7-0.8})* in the filename are automatically set in the LoRA's trigger.
 * Some characters not compatible with filenames are automatically converted from placeholders, such as ©️ to : *(for [keywords with weights](#weights))*
-* Support for multiple images per LoRA/Checkpoint etc in a [modal gallery](#modal). Hover over a card and click the folder icon.
-* Support for [displaying a companion .txt file](#modal) to store descriptions, notes, and sample prompts. Hover over a card and click the document icon.
+* Support for multiple images per LoRA/model/etc in a [modal gallery](#modal). Hover over a card & click the folder icon.
+* Support for [displaying a companion .txt file](#modal) to store descriptions, notes, and prompts. Hover over a card & click the document icon.
 
 ## Installation / Setup
 
