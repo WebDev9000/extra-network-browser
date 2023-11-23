@@ -17,6 +17,8 @@ Advantages over the Extra Network Tabs:
 * Support for multiple images per LoRA/model/etc in a [modal gallery](#modal). Hover over a card & click the folder icon.
 * Support for [displaying a companion .txt file](#modal) to store descriptions, notes, and prompts. Hover over a card & click the document icon.
 
+<br />
+
 ## Installation / Setup
 
 This project is very much primarily a personal project that's being shared. As such, setup is a little raw but also fairly straight-forward.
@@ -65,6 +67,8 @@ ln -s ~/webui/styles.csv styles.csv
 ```
 </details>
 
+<br />
+
 ## How to Use:
 
 ![menu](menu.png)
@@ -83,7 +87,9 @@ To quickly rename a batch of images in this pattern in Windows, select multiple 
 
 Finally, add a `filename.txt` file in the same folder for a quick info modal.  Great for storing descriptions, notes, and sample prompts.  You can switch between the modal gallery and the modal notes with the up / down arrow keys while the modal is open.
 
-### Why only .JPEG?
+<br />
+
+#### Why only .JPEG?
 
 Currently this is to keep the file scanning time fast, and the image loading and memory requirements low.  Using a single format means the application doesn't need to check for multiple possible formats per LoRA/checkpoint/etc, or load much larger PNG files.
 
@@ -97,7 +103,8 @@ Formats such as .PNG can be mass converted while leaving the originals intact us
 magick mogrify -format jpeg *.png
 ```
 
----
+<br />
+
 ## Examples:
 
 ![howto gif](howto.gif)
@@ -136,6 +143,8 @@ Note the ( )'s properly escaped and ©️ replaced by : (because : can't be in a
 Without a weight or range, it will default to :1.0.
 
 **ComfyUI Users:** Please note that as of this writing, when loading a LoRA via prompt using the [ComfyUI Prompt Control](https://github.com/asagi4/comfyui-prompt-control) nodes, braces { } in the filename are incompatible even when escaped.  To address this I've made a small custom input node that disables "Dynamic Prompts", which I plan to release soon.
+
+<br />
 
 ## Misc
 
