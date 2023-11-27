@@ -114,7 +114,7 @@ export default function GetImages() {
 	const handleSortChange = (sortOption) => {
 		setSort(sortOption)
 		// Triggering refresh manually to allow for sorting option reclicks
-		setRenderMore(!renderMore)
+		setRender(!render)
 	}
 
 	const handleTypeChange = (typeOption) => {
