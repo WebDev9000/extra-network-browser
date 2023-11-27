@@ -5,6 +5,7 @@ import ReactModal from 'react-modal'
 import Image from "./Image"
 
 export default function GetImages() {
+	const [render, setRender] = useState(false);
 	const [images, setImages] = useState([])
 	const [searchTerm, setSearchTerm] = useState('')
 	const [loading, setLoading] = useState(true)
@@ -112,7 +113,8 @@ export default function GetImages() {
 
 	const handleSortChange = (sortOption) => {
 		setSort(sortOption)
-		fetchImages()
+		// Triggering refresh manually to allow for sorting option reclicks
+		setRenderMore(!renderMore)
 	}
 
 	const handleTypeChange = (typeOption) => {
@@ -198,7 +200,7 @@ export default function GetImages() {
 
 	useEffect(() => {
 		fetchImages()
-	}, [searchTerm, type])
+	}, [searchTerm, type, render])
 
 	useEffect(() => {
 		if (moreIndex) {
@@ -248,8 +250,8 @@ export default function GetImages() {
 					>
 						{moreLoading && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
 						{moreError && <h2>There was an error during loading.</h2>}
-						{!moreLoading && !moreError && moreImages[0] && !moreDocument && <div className="modalHeader" style={{width: `calc(224px * ${moreImages.length})`}}>{images[moreIndex].path + images[moreIndex].filename}</div>}
-						{!moreLoading && !moreError && moreImages[0] && !moreDocument && moreImages.map((image, index) => (
+						{!moreLoading && !moreError && images[moreIndex] && moreImages[0] && !moreDocument && <div className="modalHeader" style={{width: `calc(224px * ${moreImages.length})`}}>{images[moreIndex].path + images[moreIndex].filename}</div>}
+						{!moreLoading && !moreError && images[moreIndex] && moreImages[0] && !moreDocument && moreImages.map((image, index) => (
 							<div key={index+1000000} className="imgCard" onClick={() => {navigator.clipboard.writeText(images[moreIndex].prompt)}}>
 								<img width="224" height="336"
 									src={"http://localhost:3000/" + image.path + encodeURIComponent(image.filename)}
@@ -258,12 +260,13 @@ export default function GetImages() {
 								/>
 							</div>
 						))}
-						{!moreLoading && !moreError && moreDocument &&
+						{!moreLoading && !moreError && moreDocument && images[moreIndex] &&
 							<div className="moreDocument">
 								<pre>
-									File: {images[moreIndex].filename}
-									Keywords: {images[moreIndex].keywords}
-									Weight: {images[moreIndex].weight}
+									File: {images[moreIndex].filename}{<br />}
+									{type != "styles" && `Keywords: ${images[moreIndex].keywords}\n`}
+									{type != "styles" && `Weight: ${images[moreIndex].weight}`}
+									{type == "styles" && `Prompt: ${images[moreIndex].prompt}`}
 								</pre>
 								<pre>{moreDocument}</pre>
 							</div>

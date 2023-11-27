@@ -26,10 +26,6 @@ app.get('/images', (req, res) => {
   const searchTerm = req.query.search || null
   const searchType = req.query.type || 'lora'
   let images = []
-  let pattern = '*'
-  if (searchTerm) {
-    pattern = `*${searchTerm}*`
-  }
 
   if (searchType == "styles") {
     // ********* STYLES *********
@@ -37,25 +33,29 @@ app.get('/images', (req, res) => {
 
     const fs = require('fs')
     const {parse} = require ('csv-parse')
+    const pattern = searchTerm ? `.*?${searchTerm}.*` : '.*'
+    const re = new RegExp(pattern, 'gi')
 
     let index = -1
 
     fs.createReadStream('networks/styles.csv')
       .pipe(parse({ delimiter: ',', columns: true, trim: true }))
       .on('data', (row) => {
-        let imageData = {
-          filename: row.name + "." + imgExt,
-          path: "styles/",
-          name: row.name,
-          author: null,
-          tags: null,
-          keywords: null,
-          weight: null,
-          prompt: row.prompt,
-          mtimeMs: index++,
-          mtime: null,
+        if (row.name.match(re) || row.prompt.match(re)) {
+          let imageData = {
+            filename: row.name + "." + imgExt,
+            path: "styles/",
+            name: row.name,
+            author: null,
+            tags: null,
+            keywords: null,
+            weight: null,
+            prompt: row.prompt,
+            mtimeMs: index++,
+            mtime: null,
+          }
+          images.push(imageData);
         }
-        images.push(imageData);
       })
       .on('end', () => {
         res.json(images)
@@ -65,6 +65,7 @@ app.get('/images', (req, res) => {
     // ********* GLOB *********
     // Everything else uses a GLOB
 
+    const pattern = searchTerm ? `*${searchTerm}*` : '*'
     let ext = null
     if (searchType == "lora" || searchType == "checkpoints") {
       ext = "safetensors"
