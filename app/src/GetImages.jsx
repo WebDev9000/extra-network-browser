@@ -30,6 +30,7 @@ export default function GetImages() {
 			backgroundColor: 'rgba(0,0,0,0.97)',
 		},
 		content: {
+			maxHeight: '90%',
 			maxWidth: '2545px',
 			top: '50%',
 			left: '50%',
