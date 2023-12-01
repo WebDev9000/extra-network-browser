@@ -31,10 +31,11 @@ This project is very much primarily a personal project that's being shared. As s
 5) From api folder: `node index` *(this starts the backend that'll deal with the filesystem)*
 
 6) In another terminal, from the `extra-network-browser` folder: `cd app && npm install` *(once)*
-7) From app folder: `npm run build` *(The React frontend - you only need to build **once** per update)*
-8) From app folder: `npm run preview` *(or serve the dist folder with the webserver of your choice, such as nginx)*
+7) From app folder: `npm run dev` *(The React frontend)*
 
-From here on, you can just use `node index` from the api folder to start the backend, and `npm run preview` from the app folder to start the frontend.
+From here on, you can just use `node index` from the api folder to start the backend, and `npm run dev` from the app folder to start the frontend.
+
+*(Note: you can also use `npm run build` followed by `npm run preview`, or serve the dist folder with the webserver of your choice, such as nginx. This will give slightly better performance. If you do so, you must rerun `npm run build` after any new updates or changes to the code.)*
 
 ---
 
@@ -95,7 +96,7 @@ Finally, add a `filename.txt` file in the same folder for a quick info modal.  G
 
 Currently this is to keep the file scanning time fast, and the image loading and memory requirements low.  Using a single format means the application doesn't need to check for multiple possible formats per LoRA/checkpoint/etc, or load much larger PNG files.
 
-*Want to use .jpg, .png, or something else?  Simply modify `api/index.js` and change `const imgExt = 'jpeg`, around line 7.*
+*Want to use .jpg, .png, or something else?  Simply modify `api/index.js` and change `const imgExt = 'jpeg'`, line 7.*
 
 <br />
 
@@ -133,10 +134,11 @@ If you choose to follow a different naming convention without keywords or weight
 <a id="weights"></a>
 ### Another example, Keywords with Weights:
 
-`api/networks/lora/example-lora_v1_johndoe [anotherlora, (awesome:1©️4}] [anotherkeyword] (RevAnimated) {1.0} #style.safetensors`<br />
-`api/networks/lora/example-lora_v1_johndoe [anotherlora, (awesome:1©️4}] [anotherkeyword] (RevAnimated) {1.0} #style.jpeg`
+`api/networks/lora/example-lora_v1_johndoe [anotherlora, (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0} #style.safetensors`
 
-will copy to the clipboard:
+`api/networks/lora/example-lora_v1_johndoe [anotherlora, (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0} #style.jpeg`
+
+Will copy to the clipboard:
 
 `anotherlora, \(awesome:1.4\), anotherkeyword <lora:nother-lora_v1_johndoe [anotherlora, (awesome:1.4}] [anotherkeyword] (RevAnimated) {1.0} #style:1.0>`
 
