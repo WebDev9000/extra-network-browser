@@ -25,13 +25,14 @@ Advantages over the Extra Network Tabs:
 This project is very much primarily a personal project that's being shared. As such, setup is a little raw but also fairly straight-forward.
 
 1) You must have [Node.JS](https://nodejs.org/en) installed. (I recommend the LTS)
-2) clone (or download) this repo and cd into the newly created folder.
-3) cd api && npm install *(once)*
-4) From api folder: node index. *(this starts the backend that'll deal with the filesystem)*
+2) clone (or download) this repo and cd into the newly created folder.<br />
+   ```git clone https://github.com/WebDev9000/extra-network-browser.git && cd extra-network-browser```
+4) `cd api && npm install` *(once)*
+5) From api folder: `node index` *(this starts the backend that'll deal with the filesystem)*
 
-5) In another terminal: cd app && npm install *(once)*
-6) From app folder: npm run build *(The React frontend - you only need to build **once** per update)*
-7) From app folder: npm run preview *(or serve the dist folder with the webserver of your choice, such as nginx)*
+6) In another terminal, from the `extra-network-browser` folder: `cd app && npm install` *(once)*
+7) From app folder: `npm run build` *(The React frontend - you only need to build **once** per update)*
+8) From app folder: `npm run preview` *(or serve the dist folder with the webserver of your choice, such as nginx)*
 
 From here on, you can just use `node index` from the api folder to start the backend, and `npm run preview` from the app folder to start the frontend.
 
