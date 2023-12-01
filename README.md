@@ -142,7 +142,7 @@ Note the ( )'s properly escaped and ©️ replaced by : (because : can't be in a
 
 Without a weight or range, it will default to :1.0.
 
-**ComfyUI Users:** Please note that as of this writing, when loading a LoRA via prompt using the [ComfyUI Prompt Control](https://github.com/asagi4/comfyui-prompt-control) nodes, braces { } in the filename are incompatible even when escaped.  To address this I've made a small custom input node that disables "Dynamic Prompts", which I plan to release soon.
+**ComfyUI Users:** Please note that as of this writing, when loading a LoRA via prompt using the [ComfyUI Prompt Control](https://github.com/asagi4/comfyui-prompt-control) nodes, braces { } in the filename are incompatible even when escaped.  To address this I've made a small custom input node that disables "Dynamic Prompts", which you can find [here](https://github.com/WebDev9000/WebDev9000-Nodes).
 
 <br />
 
