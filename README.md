@@ -22,37 +22,46 @@ Advantages over the Extra Network Tabs:
 
 ## Installation / Setup
 
-This project is very much primarily a personal project that's being shared. As such, setup is a little raw but also fairly straight-forward.
-
 1) You must have [Node.JS](https://nodejs.org/en) installed. (I recommend the LTS)
-2) clone (or download) this repo and cd into the newly created folder.<br />
+2) clone (or download and unzip) this repo and cd into the newly created folder.<br />
    ```git clone https://github.com/WebDev9000/extra-network-browser.git && cd extra-network-browser```
-4) `cd api && npm install` *(once)*
-5) From api folder: `node index` *(this starts the backend that'll deal with the filesystem)*
+4) Run `setup.bat` (once)
 
-6) In another terminal, from the `extra-network-browser` folder: `cd app && npm install` *(once)*
-7) From app folder: `npm run dev` *(The React frontend)*
+5) Run `start.bat`
 
-From here on, you can just use `node index` from the api folder to start the backend, and `npm run dev` from the app folder to start the frontend.
+<details>
+<summary>Manual installation and start up</summary>
+
+#### Setup:
+
+```
+git clone https://github.com/WebDev9000/extra-network-browser.git && cd extra-network-browser
+cd api && npm install
+cd ../app && npm install
+```
+
+#### Start up:
+
+5) From api folder: `start node index` *(This starts the backend that'll deal with the filesystem)*
+6) From app folder: `start npm run dev` *(The React frontend)*
 
 *(Note: you can also use `npm run build` followed by `npm run preview`, or serve the dist folder with the webserver of your choice, such as nginx. This will give slightly better performance. If you do so, you must rerun `npm run build` after any new updates or changes to the code.)*
 
----
+</details>
+<br />
 
-In addition, the following must be be done once:
+Then add content:
 
-1) cd api/networks
-2) symlink your WebUI or other existing model folders to the following names: `lora`, `checkpoints`, `embeddings`, `hypernets`, `styles`
-3) symlink your WebUI styles.csv to the root of the networks folder.
+- Populate the folders in `api/networks/` with your files: `lora`, `checkpoints`, `embeddings`, `hypernets`, and `styles`.
+- Edit `api/networks/styles.csv` with *(only)* `name,prompt` on the first line, and your styles (following the format shown [below](#styles)) on the subsequent lines.
 
 ***OR***
 
-1) cd api/networks
-2) create the folders: `lora`, `checkpoints`, `embeddings`, `hypernets`, `styles`, and populate with your files.
-3) create the file styles.csv with *(only)* `name,prompt` on the first line, following the format listed below.
+1) `cd api/networks` and remove any folders you wish to symlink, and/or styles.csv if you wish to symlink it.
+2) symlink your WebUI or other existing model folders to the following names: `lora`, `checkpoints`, `embeddings`, `hypernets`, `styles`
+3) symlink your WebUI styles.csv to the root of the networks folder.
 
 <details>
-
 <summary>How to make symbolic links</summary>
 
 Symlinking your existing folders is suggested and can be done as such:
@@ -69,6 +78,7 @@ ln -s ~/webui/models/LoRA lora
 ln -s ~/webui/styles.csv styles.csv
 ```
 </details>
+<br />
 
 <br />
 
