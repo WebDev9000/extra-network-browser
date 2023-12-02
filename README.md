@@ -22,7 +22,7 @@ Advantages over the Extra Network Tabs:
 
 ## Installation / Setup
 
-1) You must have [Node.JS](https://nodejs.org/en) installed. (I recommend the LTS)
+1) You must have [Node.JS](https://nodejs.org/en) 20.10.0 (LTS) or greater installed.
 2) clone (or download and unzip) this repo and cd into the newly created folder.<br />
    ```git clone https://github.com/WebDev9000/extra-network-browser.git && cd extra-network-browser```
 4) Run `setup.bat` (once)
