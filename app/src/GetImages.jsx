@@ -120,6 +120,8 @@ export default function GetImages() {
 
 	const handleTypeChange = (typeOption) => {
 		setType(typeOption)
+		// Prevent issue with clicking the same image (eg. 3rd) on each tab not loading.
+		setMoreIndex(null)
 	}
 
 	const openModal = () => {
@@ -204,7 +206,7 @@ export default function GetImages() {
 	}, [searchTerm, type, render])
 
 	useEffect(() => {
-		if (moreIndex) {
+		if (moreIndex != null) {
 			fetchMoreImages()
 		}
 	}, [renderMore])
