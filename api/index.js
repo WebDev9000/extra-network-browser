@@ -102,8 +102,7 @@ app.get('/images', (req, res) => {
         keywords = keywords.replaceAll(/©️/g, ':')
         keywords = keywords.replaceAll(/≻/g, '>')
         keywords = keywords.replaceAll(/≺/g, '<')
-        keywords = keywords.replaceAll(/\(/g, '\\(')
-        keywords = keywords.replaceAll(/\)/g, '\\)')
+        keywords = keywords.replaceAll(/(\w+?) \((\w+?)\)/gi, '$1 \\($2\\)')
         keywords = keywords.replaceAll('[', '')
         keywords = keywords.replaceAll(']', ', ')
       }

@@ -144,15 +144,15 @@ If you choose to follow a different naming convention without keywords or weight
 <a id="weights"></a>
 ### Another example, Keywords with Weights:
 
-`api/networks/lora/example-lora_v1_johndoe [anotherlora, (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0} #style.safetensors`
+`api/networks/lora/example-lora_v1_johndoe [anotherlora, watercolor (medium), (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0} #style.safetensors`
 
-`api/networks/lora/example-lora_v1_johndoe [anotherlora, (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0} #style.jpeg`
+`api/networks/lora/example-lora_v1_johndoe [anotherlora, watercolor (medium), (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0} #style.jpeg`
 
 Will copy to the clipboard:
 
-`anotherlora, \(awesome:1.4\), anotherkeyword <lora:nother-lora_v1_johndoe [anotherlora, (awesome:1.4}] [anotherkeyword] (RevAnimated) {1.0} #style:1.0>`
+`anotherlora, watercolor \(medium\), (awesome:1.4), anotherkeyword <lora:nother-lora_v1_johndoe [anotherlora, (awesome:1.4}] [anotherkeyword] (RevAnimated) {1.0} #style:1.0>`
 
-Note the ( )'s properly escaped and ©️ replaced by : (because : can't be in a filename).  I've found this very useful when dealing with keywords that have suggested weights.
+Note the ( )'s are escaped as needed on non-weights, and ©️ is replaced by : (because : can't be in a filename).  I've found this very useful when dealing with keywords that have suggested weights.
 
 Without a weight or range, it will default to :1.0.
 
