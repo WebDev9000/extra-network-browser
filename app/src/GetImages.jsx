@@ -233,7 +233,7 @@ export default function GetImages() {
 						<span title="Random" className={`sortOption ${sort == "random" ? "highlight" : ""}`} onClick={() => handleSortChange("random")}>R</span>
 					</div>
 				</div>
-				<div>
+				<div id="imgGrid">
 					{loading && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
 					{error && <h2>There was an error loading the images.</h2>}
 					{!loading && !error && images.map((image, index) => (
@@ -256,26 +256,28 @@ export default function GetImages() {
 						{moreLoading && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
 						{moreError && <h2>There was an error during loading.</h2>}
 						{!moreLoading && !moreError && images[moreIndex] && moreImages[0] && !moreDocument && <div className="modalHeader" style={{width: `calc(224px * ${moreImages.length})`} /*adjust header size for # of images until max width*/}>{images[moreIndex].path + images[moreIndex].filename}</div>}
-						{!moreLoading && !moreError && images[moreIndex] && moreImages[0] && !moreDocument && moreImages.map((image, index) => (
-							<div key={index+1000000} className="imgCard" onClick={() => {navigator.clipboard.writeText(images[moreIndex].prompt)}}>
-								<img width="224" height="336"
-									src={"http://localhost:3000/" + image.path + encodeURIComponent(image.filename)}
-									loading={index <= 60 ? "eager" : "lazy"}
-									title={image.filename}
-								/>
-							</div>
-						))}
-						{!moreLoading && !moreError && moreDocument && images[moreIndex] &&
-							<div className="moreDocument">
-								<pre>
-									File: {images[moreIndex].filename}{<br />}
-									{type != "styles" && `Keywords: ${images[moreIndex].keywords}\n`}
-									{type != "styles" && `Weight: ${images[moreIndex].weight}`}
-									{type == "styles" && `Prompt: ${images[moreIndex].prompt}`}
-								</pre>
-								<pre>{moreDocument}</pre>
-							</div>
-						}
+						<div id="modalImgGrid">
+							{!moreLoading && !moreError && images[moreIndex] && moreImages[0] && !moreDocument && moreImages.map((image, index) => (
+								<div key={index+1000000} className="imgCard" onClick={() => {navigator.clipboard.writeText(images[moreIndex].prompt)}}>
+									<img width="224" height="336"
+										src={"http://localhost:3000/" + image.path + encodeURIComponent(image.filename)}
+										loading={index <= 60 ? "eager" : "lazy"}
+										title={image.filename}
+									/>
+								</div>
+							))}
+							{!moreLoading && !moreError && moreDocument && images[moreIndex] &&
+								<div className="moreDocument">
+									<pre>
+										File: {images[moreIndex].filename}{<br />}
+										{type != "styles" && `Keywords: ${images[moreIndex].keywords}\n`}
+										{type != "styles" && `Weight: ${images[moreIndex].weight}`}
+										{type == "styles" && `Prompt: ${images[moreIndex].prompt}`}
+									</pre>
+									<pre>{moreDocument}</pre>
+								</div>
+							}
+						</div>
 					</div>
 				</ReactModal>
 			</div>

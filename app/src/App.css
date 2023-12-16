@@ -115,6 +115,15 @@
   display: none;
 }
 
+#imgGrid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
 .modalContent {
   outline: none;
 }
@@ -125,8 +134,17 @@
   max-width: 95%;
 }
 
+#imgGrid, #modalImgGrid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
 .moreDocument pre {
-  text-wrap: wrap;
+  white-space: pre-wrap;
   word-break: break-word;
 }
 
