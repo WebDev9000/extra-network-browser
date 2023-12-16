@@ -31,7 +31,7 @@ export default function GetImages() {
 		},
 		content: {
 			maxHeight: '90%',
-			maxWidth: '2545px',
+			maxWidth: '95%',
 			top: '50%',
 			left: '50%',
 			right: 'auto',
@@ -40,6 +40,8 @@ export default function GetImages() {
 			transform: 'translate(-50%, -50%)',
 			backgroundColor: 'rgba(0,0,0,0.25)',
 			border: 'none',
+			scrollbarWidth: 'thin',
+			scrollbarColor: '#141414 #000'
 		},
 	}
 
@@ -253,7 +255,7 @@ export default function GetImages() {
 					>
 						{moreLoading && <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>}
 						{moreError && <h2>There was an error during loading.</h2>}
-						{!moreLoading && !moreError && images[moreIndex] && moreImages[0] && !moreDocument && <div className="modalHeader" style={{width: `calc(224px * ${moreImages.length})`}}>{images[moreIndex].path + images[moreIndex].filename}</div>}
+						{!moreLoading && !moreError && images[moreIndex] && moreImages[0] && !moreDocument && <div className="modalHeader" style={{width: `calc(224px * ${moreImages.length})`} /*adjust header size for # of images until max width*/}>{images[moreIndex].path + images[moreIndex].filename}</div>}
 						{!moreLoading && !moreError && images[moreIndex] && moreImages[0] && !moreDocument && moreImages.map((image, index) => (
 							<div key={index+1000000} className="imgCard" onClick={() => {navigator.clipboard.writeText(images[moreIndex].prompt)}}>
 								<img width="224" height="336"

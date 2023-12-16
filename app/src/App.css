@@ -1,5 +1,5 @@
 #root {
-  max-width: 2800px;
+  max-width: 95%;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -122,7 +122,7 @@
 .modalHeader {
   text-align: center;
   word-break: break-word;
-  max-width: 2545px;
+  max-width: 95%;
 }
 
 .moreDocument pre {
