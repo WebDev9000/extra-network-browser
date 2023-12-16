@@ -210,3 +210,10 @@ In this example, your matching image files in `api/networks/styles` would be:
 
 `api/networks/styles/My-LoRA (John Doe) - Style 1.jpeg`<br/>
 `api/networks/styles/My-LoRA (John Doe) - Style 2.jpeg`
+
+<br />
+
+## Contributing
+
+This repo is a personal project that I am sharing in the hope that others may also find value.<br />
+Github does not allow disabling Pull Requests, however please be aware **I am not currently accepting PRs**.
