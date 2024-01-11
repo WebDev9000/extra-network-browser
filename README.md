@@ -15,8 +15,9 @@ Advantages over the Extra Network Tabs:
 * [Weights](#weights) placed in braces { }'s *(eg {1.0} or {0.7-0.8})* in the filename are automatically set in the LoRA's trigger.
 * Some characters not compatible with filenames are automatically converted from placeholders, such as ©️ to : *(for [keywords with weights](#weights))*
 * Sort by Name, Date Modified, or try Random sort for inspiration.
-* Support for multiple images per LoRA/model/etc in a [modal gallery](#modal). Hover over a card & click the folder icon.
+* Support for multiple images per LoRA/model/etc in a [modal gallery](#modal) (including filename [search](#search)). Hover over a card & click the folder icon.
 * Support for [displaying a companion .txt file](#modal) to store descriptions, notes, and prompts. Hover over a card & click the document icon.
+* [Gallery](#modal) tab for arbitrary image folders, such as saved generation results.
 
 <br />
 
@@ -52,7 +53,7 @@ cd ../app && npm install
 
 Then add content:
 
-- Populate the folders in `api/networks/` with your files: `lora`, `checkpoints`, `embeddings`, `hypernets`, and `styles`.
+- Populate the folders in `api/networks/` with your files: `lora`, `checkpoints`, `embeddings`, `hypernets`, `styles`, and `gallery`.
 - Edit `api/networks/styles.csv` with *(only)* `name,prompt` on the first line, and your styles (following the format shown [below](#styles)) on the subsequent lines.
 
 ***OR***
@@ -89,16 +90,30 @@ ln -s ~/webui/styles.csv styles.csv
 Filenames following the suggested naming convention are ***optional***, but to get the full convivence of the Extra Network Browser, the following format is suggested:
 
 ``` ini
-name_v1_author [keyword1, keyword2] [keyword3, keyword4] (suggested model) {weight1-weight2} #tag1 #tag2.safetensors
+name_v1_author [keyword1, keyword2] [keyword3, keyword4] (suggested model) {weight1-weight2}.safetensors
 ```
 
-With matching files of the same name ending in **.jpeg** in the same folder, max height 336px.  *(Width is auto-cropped to center at 224px)*
+Or simply:
+```
+My-LoRA.safetensors
+```
+
+and a matching file of the same name ending in **.jpeg** (e.g. ```My-LoRA.jpeg```) in the same folder for the preview.  Max height is auto-sized to 336px, width is auto centered at a max 224px.
+
+#### Additional Images
 <a id="modal"></a>
-Saving additional images as `filename. (1).jpeg`, `filename. (2).jpeg` and so on will populate a modal gallery popup.  You can then navigate to the prev / next network card with the left / right arrow keys while the modal is open.
+*Option 1:*<br/>
+Saving additional images as `My-LoRA. (1).jpeg`, `My-LoRA. (2).jpeg` and so on will populate a modal gallery popup.  You can then navigate to the prev / next network card with the left / right arrow keys while the modal is open.
 
 To quickly rename a batch of images in this pattern in Windows, select multiple images, then rename them as `filename..jpeg` (two dots) -- windows will automatically add ` (1)`, ` (2)` and so on.
 
-Finally, add a `filename.txt` file in the same folder for a quick info modal.  Great for storing descriptions, notes, and sample prompts.  You can switch between the modal gallery and the modal notes with the up / down arrow keys while the modal is open.
+*Option 2:*<br/>
+Make additional subfolders with the same name as the model, and place .jpegs inside with any name you'd like.<br/>
+e.g. `api/networks/lora/My-LoRA/file123.jpg`
+
+Finally, you can add a `filename.txt` file in the same folder for a quick info modal.  Great for storing descriptions, notes, and sample prompts.  You can switch between the modal gallery and the modal notes with the up / down arrow keys while the modal is open.
+
+**Note: Use the full matching filename, minus extension, of the related model/item.**
 
 <br />
 
@@ -127,8 +142,8 @@ magick mogrify -format jpeg *.png
 <a id="keywords"></a>
 ### the LoRA / image pair:
 
-`api/networks/lora/example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8} #style.safetensors`<br />
-`api/networks/lora/example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8} #style.jpeg`
+`api/networks/lora/example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8}.safetensors`<br />
+`api/networks/lora/example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8}.jpeg`
 
 will copy to the clipboard:
 
@@ -144,13 +159,13 @@ If you choose to follow a different naming convention without keywords or weight
 <a id="weights"></a>
 ### Another example, Keywords with Weights:
 
-`api/networks/lora/example-lora_v1_johndoe [anotherlora, watercolor (medium), (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0} #style.safetensors`
+`api/networks/lora/example-lora_v1_johndoe [anotherlora, watercolor (medium), (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0}.safetensors`
 
-`api/networks/lora/example-lora_v1_johndoe [anotherlora, watercolor (medium), (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0} #style.jpeg`
+`api/networks/lora/example-lora_v1_johndoe [anotherlora, watercolor (medium), (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0}.jpeg`
 
 Will copy to the clipboard:
 
-`anotherlora, watercolor \(medium\), (awesome:1.4), anotherkeyword <lora:nother-lora_v1_johndoe [anotherlora, (awesome:1.4}] [anotherkeyword] (RevAnimated) {1.0} #style:1.0>`
+`anotherlora, watercolor \(medium\), (awesome:1.4), anotherkeyword <lora:nother-lora_v1_johndoe [anotherlora, (awesome:1.4}] [anotherkeyword] (RevAnimated) {1.0}:1.0>`
 
 Note the ( )'s are escaped as needed on non-weights, and ©️ is replaced by : (because : can't be in a filename).  I've found this very useful when dealing with keywords that have suggested weights.
 
@@ -210,6 +225,34 @@ In this example, your matching image files in `api/networks/styles` would be:
 
 `api/networks/styles/My-LoRA (John Doe) - Style 1.jpeg`<br/>
 `api/networks/styles/My-LoRA (John Doe) - Style 2.jpeg`
+
+---
+
+<a id="gallery"></a>
+### Gallery:
+
+The Gallery tab *("G")* looks for *subfolders* inside the `api/networks/gallery/` folder and displays a card for each, using a .jpeg matching the folder name in the `/gallery`.
+Examples:
+```
+api/networks/gallery/saved-images/      # Gallery folder with images
+api/networks/gallery/saved-images.jpeg  # Gallery folder thumbnail image
+
+api/networks/gallery/testing-images/      # Gallery folder with images
+api/networks/gallery/testing-images.jpeg  # Gallery folder thumbnail image
+```
+
+<a id="search"></a>
+## Advanced Search:
+Searching in field at the top will filter the results of the tab you are in: LoRAs / Models / Styles / Gallery, and etc.
+
+You can further drill-down to the *"additional images"* in the [modal gallery](#modal) using a **`>`** character followed by a filename found *inside* of one of the results
+
+Examples:
+```
+Watercolor          # Filters tab to Watercolor-Lora, Watercolor_v2, etc
+Watercolor > 2024   # Filters to individual images inside Watercolor-Lora, Watercolor_v2, etc with filenames containing "2024"
+>2024               # Filters to any filename containing '2024' in any LoRA/model/style/etc in the tab.
+```
 
 <br />
 

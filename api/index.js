@@ -19,6 +19,7 @@ app.use('/styles', express.static('networks/styles'))
 app.use('/checkpoints', express.static('networks/checkpoints'))
 app.use('/embeddings', express.static('networks/embeddings'))
 app.use('/hypernets', express.static('networks/hypernets'))
+app.use('/gallery', express.static('networks/gallery'))
 
 // Endpoint to return images
 app.get('/images', (req, res) => {
@@ -65,72 +66,128 @@ app.get('/images', (req, res) => {
     // ********* GLOB *********
     // Everything else uses a GLOB
 
-    const pattern = searchTerm ? `*${searchTerm}*` : '*'
-    let ext = null
-    if (searchType == "lora" || searchType == "checkpoints") {
-      ext = "safetensors"
-    } else if (searchType == "embeddings" || searchType == "hypernets") {
-      ext = "(pt|safetensors)"
-    } else {
-      return res.status(400).send({
-        message: 'Invalid type requested.'
-      });
-    }
-    const files = fg.globSync([`networks/${searchType}/**/${pattern}.${ext}`], { dot: true, caseSensitiveMatch: false, stats: true })
-    images = files.map(file => {
+    if (searchType == "gallery") {
+      // Gallery searches for a list of folders rather than a list of models.
 
-      // Expected filename example:
-      // "name1-name2_author [keyword1, keyword2] [keyword3, keyword4] (model) {weight1-weight2} #tag1 #tag2.jpeg"
+      let pattern = ''
+      let extraPattern = ''
+      let _onlyDirectories = true
 
-      let filematch = file.name.match(/(.*)\.(safetensors|ckpt|pt|bin)$/)
-      filename = filematch ? filematch[1] + "." + imgExt : ""
-      let noext = filematch ? filematch[1] : ""
-      let words = noext.split(' ')
-      let path = file.path.replace(file.name, '').replace('networks/', '').toLowerCase()
-      let name =  noext.match(/^(.*)_([0-9a-zA-Z]+)\s/)
-      name = name ? name[1] : null
-      let author = noext.match(/_([0-9a-zA-Z]+)\s/)
-      author = author ? author[1] : null
-      let hashtagWords = words.filter(word => word.startsWith("#"))
-      let tags = hashtagWords.map(word => word.slice(1))
-      let weight = noext.match(/{(?:[0-9]*\.?[0-9]+\s?-)?([0-9]*\.?[0-9]+)}/)
-      weight = weight ? weight[1] : "1.0"
-
-      let keywords = filename.match(/\[(.*)\]/)
-      if (keywords) {
-        keywords = keywords[1]
-        keywords = keywords.replaceAll(/©️/g, ':')
-        keywords = keywords.replaceAll(/≻/g, '>')
-        keywords = keywords.replaceAll(/≺/g, '<')
-        keywords = keywords.replaceAll(/(\w+?) \((\w+?)\)/gi, '$1 \\($2\\)')
-        keywords = keywords.replaceAll('[', '')
-        keywords = keywords.replaceAll(']', ', ')
-      }
-
-      let prompt = null
-      if (searchType == "lora") {
-        prompt = `${keywords ? keywords+" " : ""}<lora:${noext}:${weight}>`
-      } else if (searchType == "hypernets") {
-        prompt = `${keywords ? keywords+" " : ""}<hypernet:${noext}:${weight}>`
+      if (searchTerm) {
+        if (searchTerm.split(">").length > 1) {
+          pattern = searchTerm.split(">")[0] ? `*${searchTerm.split(">")[0]}*` : '*'
+          extraPattern = '/' + (searchTerm.split(">")[1] ? `*${searchTerm.split(">")[1]}*` : '*')
+          _onlyDirectories = false
+        } else {
+          pattern = `*${searchTerm}*`
+        }
       } else {
-        prompt = noext
+        pattern = '*'
       }
 
-      // This return is for the files map
-      return {
-        filename: filename,
-        path: path,
-        name: name,
-        author: author,
-        tags: tags,
-        keywords: keywords,
-        weight: weight,
-        prompt: prompt,
-        mtimeMs: file.stats.mtimeMs,
-        mtime: file.stats.mtime,
+      const files = fg.globSync([`networks/${searchType}/**/${pattern}${extraPattern}`], { onlyDirectories: _onlyDirectories, dot: true, caseSensitiveMatch: false, stats: true })
+
+      images = files.map(file => {
+        // Expected filename example:
+        // "name1-name2_author [keyword1, keyword2] [keyword3, keyword4] (model) {weight1-weight2} #tag1 #tag2.jpeg"
+
+        let filename = (file.name.indexOf("." + imgExt) > -1) ? file.name : file.name + "." + imgExt
+        let path = file.path.replace(file.name, '').replace('networks/', '').toLowerCase()
+
+        // This return only for files.map
+        return {
+          filename: filename,
+          path: path,
+        }
+      })
+      res.json(images)
+
+    } else {
+      let ext = null
+      if (searchType == "lora" || searchType == "checkpoints") {
+        ext = "safetensors"
+      } else if (searchType == "embeddings" || searchType == "hypernets") {
+        ext = "(pt|safetensors)"
+      } else {
+        return res.status(400).send({
+          message: 'Invalid type requested.'
+        });
       }
-    })
-    res.json(images)
+
+      let pattern = ''
+      let extraPattern = ''
+
+      if (searchTerm) {
+        if (searchTerm.split(">").length > 1) {
+          pattern = searchTerm.split(">")[0] ? `*${searchTerm.split(">")[0]}*` : '*'
+          extraPattern = '/' + (searchTerm.split(">")[1] ? `*${searchTerm.split(">")[1]}*` : '*')
+        } else {
+          pattern = `*${searchTerm}*`
+          extraPattern = "." + ext
+        }
+      } else {
+        pattern = '*'
+        extraPattern = "." + ext
+      }
+
+      const files = fg.globSync([`networks/${searchType}/**/${pattern}${extraPattern}`], { dot: true, caseSensitiveMatch: false, stats: true })
+
+      images = files.map(file => {
+        // Expected filename example:
+        // "name1-name2_author [keyword1, keyword2] [keyword3, keyword4] (model) {weight1-weight2} #tag1 #tag2.jpeg"
+
+        let filematch = file.name.match(/(.*)\.(.*?)$/)
+        let filename = filematch ? filematch[1] + "." + imgExt : ""
+        let noext = filematch ? filematch[1] : ""
+        let words = noext.split(' ')
+        let path = file.path.replace(file.name, '').replace('networks/', '').toLowerCase()
+        let name =  noext.match(/^(.*)_([0-9a-zA-Z]+)\s/)
+        name = name ? name[1] : null
+        let author = noext.match(/_([0-9a-zA-Z]+)\s/)
+        author = author ? author[1] : null
+        let hashtagWords = words.filter(word => word.startsWith("#"))
+        let tags = hashtagWords.map(word => word.slice(1))
+        let weight = noext.match(/{(?:[0-9]*\.?[0-9]+\s?-)?([0-9]*\.?[0-9]+)}/)
+        weight = weight ? weight[1] : "1.0"
+
+        let keywords = filename.match(/\[(.*)\]/)
+        if (keywords) {
+          keywords = keywords[1]
+          keywords = keywords.replaceAll(/©️/g, ':')
+          keywords = keywords.replaceAll(/≻/g, '>')
+          keywords = keywords.replaceAll(/≺/g, '<')
+          keywords = keywords.replaceAll(/(\w+?) \((\w+?)\)/gi, '$1 \\($2\\)')
+          keywords = keywords.replaceAll('[', '')
+          keywords = keywords.replaceAll(']', ', ')
+        }
+
+        let prompt = null
+        if (searchType == "lora") {
+          prompt = `${keywords ? keywords+" " : ""}<lora:${noext}:${weight}>`
+        } else if (searchType == "hypernets") {
+          prompt = `${keywords ? keywords+" " : ""}<hypernet:${noext}:${weight}>`
+        } else {
+          prompt = noext
+        }
+
+        // This return only for files.map
+        return {
+          filename: filename,
+          path: path,
+          name: name,
+          author: author,
+          tags: tags,
+          keywords: keywords,
+          weight: weight,
+          prompt: prompt,
+          mtimeMs: file.stats.mtimeMs,
+          mtime: file.stats.mtime,
+        }
+      })
+
+      res.json(images)
+    }
+
   }
 })
 
@@ -141,10 +198,9 @@ app.get('/moreImages', (req, res) => {
     message: 'Missing query.'
   });
 
-  const noext = search.replace('.' + imgExt, '')
-    .replaceAll('$','\\$')
+  // Chars like {} break the glob search if unescaped.
+  const filteredSearch = search.replaceAll('$','\\$')
     .replaceAll('^','\\^')
-    .replaceAll('+','\\+')
     .replaceAll('?','\\?')
     .replaceAll('(','\\(')
     .replaceAll(')','\\)')
@@ -152,13 +208,18 @@ app.get('/moreImages', (req, res) => {
     .replaceAll(']','\\]')
     .replaceAll('{','\\{')
     .replaceAll('}','\\}')
-  const query = `networks/${noext}(.*|).${imgExt}`
-  const files = fg.globSync([query], { dot: true, caseSensitiveMatch: false, stats: true })
+
+  const noext = filteredSearch.substring(filteredSearch.lastIndexOf('/') + 1).replace('.' + imgExt, '')
+  const searchPath = filteredSearch.substring(0, filteredSearch.lastIndexOf('/'))
+
+  const query = `networks/${searchPath}/${noext}(.*|).${imgExt}`
+  const queryFolder = `networks/${searchPath}/${noext}/*.${imgExt}`
+  const files = fg.globSync([query, queryFolder], { dot: true, caseSensitiveMatch: false, stats: true })
 
   const images = files.map(file => {
-    const path = file.path.replace(file.name, '').replace('networks/', '').toLowerCase()
+  const path = file.path.replace(file.name, '').replace('networks/', '').toLowerCase()
 
-    // This return is for the files map
+    // This return is only for files.map
     return {
       filename: file.name,
       path: path,

@@ -223,6 +223,7 @@ export default function GetImages() {
 						<span title="Embedding" className={`typeOption ${type == "embeddings" ? "highlight" : ""}`} onClick={() => handleTypeChange("embeddings")}>E</span>
 						<span title="HyperNetwork" className={`typeOption ${type == "hypernets" ? "highlight" : ""}`} onClick={() => handleTypeChange("hypernets")}>H</span>
 						<span title="Checkpoint" className={`typeOption ${type == "checkpoints" ? "highlight" : ""}`} onClick={() => handleTypeChange("checkpoints")}>C</span>
+						<span title="Gallery" className={`typeOption ${type == "gallery" ? "highlight" : ""}`} onClick={() => handleTypeChange("gallery")}>G</span>
 					</div>
 					<input id="imgSearch" icon='search' placeholder='Search...'
 						onChange={handleSearchInputChange}
@@ -260,7 +261,7 @@ export default function GetImages() {
 							{!moreLoading && !moreError && images[moreIndex] && moreImages[0] && !moreDocument && moreImages.map((image, index) => (
 								<div key={index+1000000} className="imgCard" onClick={() => {navigator.clipboard.writeText(images[moreIndex].prompt)}}>
 									<img width="224" height="336"
-										src={"http://localhost:3000/" + image.path + encodeURIComponent(image.filename)}
+										src={"http://localhost:3000/" + image.path.replace('#','%23') + encodeURIComponent(image.filename)}
 										loading={index <= 60 ? "eager" : "lazy"}
 										title={image.filename}
 									/>
