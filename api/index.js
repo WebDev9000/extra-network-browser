@@ -85,7 +85,7 @@ app.get('/images', (req, res) => {
         pattern = '*'
       }
 
-      const files = fg.globSync([`networks/${searchType}/**/${pattern}${extraPattern}`], { onlyDirectories: _onlyDirectories, dot: true, caseSensitiveMatch: false, stats: true })
+      const files = fg.globSync([`networks/${searchType}/**/${pattern}${extraPattern}`], { onlyDirectories: _onlyDirectories, dot: false, caseSensitiveMatch: false, stats: true })
 
       images = files.map(file => {
         // Expected filename example:
@@ -130,7 +130,7 @@ app.get('/images', (req, res) => {
         extraPattern = "." + ext
       }
 
-      const files = fg.globSync([`networks/${searchType}/**/${pattern}${extraPattern}`], { dot: true, caseSensitiveMatch: false, stats: true })
+      const files = fg.globSync([`networks/${searchType}/**/${pattern}${extraPattern}`], { dot: false, caseSensitiveMatch: false, stats: true })
 
       images = files.map(file => {
         // Expected filename example:
@@ -150,7 +150,10 @@ app.get('/images', (req, res) => {
         let weight = noext.match(/{(?:[0-9]*\.?[0-9]+\s?-)?([0-9]*\.?[0-9]+)}/)
         weight = weight ? weight[1] : "1.0"
 
+        // Find keywords in []
         let keywords = filename.match(/\[(.*)\]/)
+
+        // Replace placeholders, escape (), remove [].
         if (keywords) {
           keywords = keywords[1]
           keywords = keywords.replaceAll(/©️/g, ':')
@@ -214,7 +217,7 @@ app.get('/moreImages', (req, res) => {
 
   const query = `networks/${searchPath}/${noext}(.*|).${imgExt}`
   const queryFolder = `networks/${searchPath}/${noext}/*.${imgExt}`
-  const files = fg.globSync([query, queryFolder], { dot: true, caseSensitiveMatch: false, stats: true })
+  const files = fg.globSync([query, queryFolder], { dot: false, caseSensitiveMatch: false, stats: true })
 
   const images = files.map(file => {
   const path = file.path.replace(file.name, '').replace('networks/', '').toLowerCase()
