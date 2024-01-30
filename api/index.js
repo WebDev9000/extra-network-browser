@@ -19,6 +19,7 @@ app.use('/styles', express.static('networks/styles'))
 app.use('/checkpoints', express.static('networks/checkpoints'))
 app.use('/embeddings', express.static('networks/embeddings'))
 app.use('/hypernets', express.static('networks/hypernets'))
+app.use('/poses', express.static('networks/poses'))
 app.use('/gallery', express.static('networks/gallery'))
 
 // Endpoint to return images
@@ -94,7 +95,7 @@ app.get('/images', (req, res) => {
         let filename = (file.name.indexOf("." + imgExt) > -1) ? file.name : file.name + "." + imgExt
         let path = file.path.replace(file.name, '').replace('networks/', '').toLowerCase()
 
-        // This return only for files.map
+        // This return is only for files.map
         return {
           filename: filename,
           path: path,
@@ -102,7 +103,50 @@ app.get('/images', (req, res) => {
       })
       res.json(images)
 
+    } else if (searchType == "poses") {
+        // Poses searches for a list of png one level deep.
+
+        let pattern = ''
+        let extraPattern = ''
+        let _onlyDirectories = false
+        let ext = "png"
+
+        if (searchTerm) {
+          if (searchTerm.split(">").length > 1) {
+            pattern = searchTerm.split(">")[0] ? `*${searchTerm.split(">")[0]}*` : '*'
+            extraPattern = '/' + (searchTerm.split(">")[1] ? `*${searchTerm.split(">")[1]}*` : '*')
+            extraPattern += "." + ext
+          } else {
+            pattern = `*${searchTerm}*`
+            extraPattern += "." + ext
+          }
+        } else {
+          pattern = '*'
+          extraPattern += "." + ext
+        }
+
+        const files = fg.globSync([`networks/${searchType}/*/${pattern}${extraPattern}`], { onlyDirectories: _onlyDirectories, dot: false, caseSensitiveMatch: false, stats: true })
+
+        images = files.flatMap(file => {
+
+          let filename = (file.name.indexOf("." + ext) > -1) ? file.name : file.name + "." + ext
+          let path = file.path.replace(file.name, '').replace('networks/', '').toLowerCase()
+          // Set the containing directory name as the nameplate.
+          let name = /poses\/(.+?)\//.exec(path)[1]
+          // Skip files with ". (\d+)", e.g. "filename. (2).png" etc.
+          if (filename.match(/\. \([0-9]+\)\./)) { return [] }
+
+          // This return is only for files.flatMap
+          return {
+            filename: filename,
+            path: path,
+            name: name
+          }
+        })
+        res.json(images)
+
     } else {
+      // Everything else searches for model files
       let ext = null
       if (searchType == "lora" || searchType == "checkpoints") {
         ext = "safetensors"
@@ -173,7 +217,7 @@ app.get('/images', (req, res) => {
           prompt = noext
         }
 
-        // This return only for files.map
+        // This return is only for files.map
         return {
           filename: filename,
           path: path,
@@ -200,6 +244,7 @@ app.get('/moreImages', (req, res) => {
   const search = req.query.search || res.status(400).send({
     message: 'Missing query.'
   });
+  const type = req.query.type
 
   // Chars like {} break the glob search if unescaped.
   const filteredSearch = search.replaceAll('$','\\$')
@@ -212,11 +257,14 @@ app.get('/moreImages', (req, res) => {
     .replaceAll('{','\\{')
     .replaceAll('}','\\}')
 
-  const noext = filteredSearch.substring(filteredSearch.lastIndexOf('/') + 1).replace('.' + imgExt, '')
+  const ext = (type == "poses") ? "png" : imgExt
+  const noext = filteredSearch.substring(filteredSearch.lastIndexOf('/') + 1).replace('.' + ext, '')
   const searchPath = filteredSearch.substring(0, filteredSearch.lastIndexOf('/'))
 
-  const query = `networks/${searchPath}/${noext}(.*|).${imgExt}`
-  const queryFolder = `networks/${searchPath}/${noext}/*.${imgExt}`
+  // (.*|) is NOT REGEX. It's ( literal dot, wildstar; OR empty )  e.g. ( example". (2)".jpeg OR example"".jpeg )
+  // Not to be confused with regex ".*"
+  const query = `networks/${searchPath}/${noext}(.*|).${ext}`
+  const queryFolder = `networks/${searchPath}/${noext}/*.${ext}`
   const files = fg.globSync([query, queryFolder], { dot: false, caseSensitiveMatch: false, stats: true })
 
   const images = files.map(file => {

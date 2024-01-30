@@ -92,7 +92,7 @@ export default function GetImages() {
 		const image = images[moreIndex]
 		const query = encodeURIComponent(image.path + image.filename)
 
-		axios.get(`http://localhost:3000/moreImages?search=${query}`)
+		axios.get(`http://localhost:3000/moreImages?type=${type}&search=${query}`)
 			.then(response => {
 				setMoreLoading(false)
 				setMoreError(false)
@@ -152,9 +152,11 @@ export default function GetImages() {
 		setMoreDocument(null)
 
 		const image = images[index]
-		const file = encodeURIComponent(image.filename.substring(0, image.filename.lastIndexOf('.')) + '.txt')
+		const file = (type == "poses") ?
+			'readme.txt'
+			: encodeURIComponent(image.filename.substring(0, image.filename.lastIndexOf('.')) + '.txt')
 
-		axios.get(`http://localhost:3000/${image.path}${file}`)
+		axios.get(`http://localhost:3000/${image.path.replaceAll('#','%23')}${file}`)
 			.then(response => {
 				setMoreLoading(false)
 				setMoreError(false)
@@ -223,6 +225,7 @@ export default function GetImages() {
 						<span title="Embedding" className={`typeOption ${type == "embeddings" ? "highlight" : ""}`} onClick={() => handleTypeChange("embeddings")}>E</span>
 						<span title="HyperNetwork" className={`typeOption ${type == "hypernets" ? "highlight" : ""}`} onClick={() => handleTypeChange("hypernets")}>H</span>
 						<span title="Checkpoint" className={`typeOption ${type == "checkpoints" ? "highlight" : ""}`} onClick={() => handleTypeChange("checkpoints")}>C</span>
+						<span title="Poses" className={`typeOption ${type == "Poses" ? "highlight" : ""}`} onClick={() => handleTypeChange("poses")}>P</span>
 						<span title="Gallery" className={`typeOption ${type == "gallery" ? "highlight" : ""}`} onClick={() => handleTypeChange("gallery")}>G</span>
 					</div>
 					<input id="imgSearch" icon='search' placeholder='Search...'
@@ -261,7 +264,7 @@ export default function GetImages() {
 							{!moreLoading && !moreError && images[moreIndex] && moreImages[0] && !moreDocument && moreImages.map((image, index) => (
 								<div key={index+1000000} className="imgCard" onClick={() => {navigator.clipboard.writeText(images[moreIndex].prompt)}}>
 									<img width="224" height="336"
-										src={"http://localhost:3000/" + image.path.replace('#','%23') + encodeURIComponent(image.filename)}
+										src={"http://localhost:3000/" + image.path.replaceAll('#','%23') + encodeURIComponent(image.filename)}
 										loading={index <= 60 ? "eager" : "lazy"}
 										title={image.filename}
 									/>

@@ -4,12 +4,12 @@
 
 Inspired by the Extra Network tabs in Automatic1111's WebUI, Extra Network Browser is a stand-alone take on the concept with additional features.
 
-Easily choose a LoRA, HyperNetwork, Embedding, Checkpoint, or Style visually and copy the trigger, keywords, and suggested weight *to the clipboard* for easy pasting into the application of your choice.
+Easily choose a **LoRA, HyperNetwork, Embedding, Checkpoint, or Style** visually and copy the trigger, keywords, and suggested weight to the clipboard for easy pasting into the application of your choice.
 
-Advantages over the Extra Network Tabs:
+Features of Extra Network Browser:
 
 * Great for UI's like ComfyUI when used with nodes like [Lora Tag Loader](https://github.com/badjeff/comfyui_lora_tag_loader/) or [ComfyUI Prompt Control](https://github.com/asagi4/comfyui-prompt-control).
-* Considerably faster, loads thousands of LoRA.
+* Considerably fast, loads thousands of LoRA easily.
 * A [Styles](#styles) tab that parses a styles CSV for thumbnail previews just like networks.
 * [Keywords](#keywords) in the filename inside brackets [ ]'s are copied along with the LoRA trigger.
 * [Weights](#weights) placed in braces { }'s *(eg {1.0} or {0.7-0.8})* in the filename are automatically set in the LoRA's trigger.
@@ -17,6 +17,7 @@ Advantages over the Extra Network Tabs:
 * Sort by Name, Date Modified, or try Random sort for inspiration.
 * Support for multiple images per LoRA/model/etc in a [modal gallery](#modal) (including filename [search](#search)). Hover over a card & click the folder icon.
 * Support for [displaying a companion .txt file](#modal) to store descriptions, notes, and prompts. Hover over a card & click the document icon.
+* [Poses](#poses) tab to visually display OpenPose collections and examples.
 * [Gallery](#modal) tab for arbitrary image folders, such as saved generation results.
 
 <br />
@@ -53,7 +54,7 @@ cd ../app && npm install
 
 Then add content:
 
-- Populate the folders in `api/networks/` with your files: `lora`, `checkpoints`, `embeddings`, `hypernets`, `styles`, and `gallery`.
+- Populate the folders in `api/networks/` with your files: `lora`, `checkpoints`, `embeddings`, `hypernets`, `styles`, `poses`, and `gallery`.
 - Edit `api/networks/styles.csv` with *(only)* `name,prompt` on the first line, and your styles (following the format shown [below](#styles)) on the subsequent lines.
 
 ***OR***
@@ -228,17 +229,49 @@ In this example, your matching image files in `api/networks/styles` would be:
 
 ---
 
+<a id="poses"></a>
+### Poses:
+
+The Poses tab ("P") is designed to work with OpenPose images used with ControlNet.  In this tab, you can manage examples of those poses for easy browing.
+
+This tab works somewhat differently than the model tabs, in that it looks for images rather than model files.<br />
+I've tried to somewhat match the format of many zipped packs I've seen, and as such I recommend the following folder structure:
+
+```
+/api/poses/<pose>/
+/api/poses/<posefolder>/pose1.png
+/api/poses/<posefolder>/pose2.png
+/api/poses/<posefolder>/OpenPose/pose1.png   #optional
+/api/poses/<posefolder>/OpenPose/pose2.png   #optional
+/api/poses/<posefolder>/Depth/pose1.png      #optional
+/api/poses/<posefolder>/Canny/pose2.png      #optional
+```
+
+The structure here is:
+* A general name for the pose folder *(e.g. "Heart Hands" or "T Pose")*
+* Example images with the pose inside that folder
+* OpenPose mannequin files inside a subfolder called OpenPose
+* Optionally any other ControlNet files stored likewise *(e.g. Depth, Canny, or Lineart folders)*
+
+For best compatibility this tab uses **.png** instead of **.jpeg**.
+*This can be changed in `api/index.js` by editing `const ext ... "png" : imgExt`, on line 260 to `jpeg`, etc.*
+
+---
+
 <a id="gallery"></a>
 ### Gallery:
 
-The Gallery tab *("G")* looks for *subfolders* inside the `api/networks/gallery/` folder and displays a card for each, using a .jpeg matching the folder name in the `/gallery`.
+The Gallery tab ("G") looks for *subfolders* inside the `api/networks/gallery/` folder and displays a card for each, using a .jpeg matching the folder name in the `/gallery`.
 Examples:
 ```
-api/networks/gallery/saved-images/      # Gallery folder with images
-api/networks/gallery/saved-images.jpeg  # Gallery folder thumbnail image
+api/networks/gallery/saved-images.jpeg     # Gallery folder thumbnail image
+api/networks/gallery/saved-images/one.jpeg     # Gallery folder with images
+api/networks/gallery/saved-images/two.jpeg     # Gallery folder with images
+api/networks/gallery/saved-images/three.jpeg   # Gallery folder with images
 
-api/networks/gallery/testing-images/      # Gallery folder with images
-api/networks/gallery/testing-images.jpeg  # Gallery folder thumbnail image
+api/networks/gallery/testing-images.jpeg   # Gallery folder thumbnail image
+api/networks/gallery/testing-images/cat.jpeg   # Gallery folder with images
+api/networks/gallery/testing-images/dog.jpeg   # Gallery folder with images
 ```
 
 <a id="search"></a>

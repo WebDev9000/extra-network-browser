@@ -2,7 +2,7 @@ export default function Image(props) {
 	return (
 		<div className="imgCard" onClick={() => {navigator.clipboard.writeText(props.prompt)}}>
 			<img width="224" height="336"
-				src={"http://localhost:3000/" + props.path.replace('#','%23') + encodeURIComponent(props.filename)}
+				src={"http://localhost:3000/" + props.path.replaceAll('#','%23') + encodeURIComponent(props.filename)}
 				loading={props.index <= 60 ? "eager" : "lazy"}
 				title={props.path + props.filename}
 			/>
