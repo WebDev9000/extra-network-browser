@@ -110,7 +110,7 @@ To quickly rename a batch of images in this pattern in Windows, select multiple 
 
 *Option 2:*<br/>
 Make additional subfolders with the same name as the model, and place .jpegs inside with any name you'd like.<br/>
-e.g. `api/networks/lora/My-LoRA/file123.jpg`
+e.g. `api/networks/lora/My-LoRA/file123.jpeg`
 
 Finally, you can add a `filename.txt` file in the same folder for a quick info modal.  Great for storing descriptions, notes, and sample prompts.  You can switch between the modal gallery and the modal notes with the up / down arrow keys while the modal is open.
 
