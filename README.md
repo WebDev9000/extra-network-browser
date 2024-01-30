@@ -34,7 +34,7 @@ Features of Extra Network Browser:
 <details>
 <summary>Manual installation and start up</summary>
 
-#### Setup:
+#### Setup
 
 ```
 git clone https://github.com/WebDev9000/extra-network-browser.git && cd extra-network-browser
@@ -42,7 +42,7 @@ cd api && npm install
 cd ../app && npm install
 ```
 
-#### Start up:
+#### Start up
 
 5) From api folder: `start node index` *(This starts the backend that'll deal with the filesystem)*
 6) From app folder: `start npm run dev` *(The React frontend)*
@@ -84,7 +84,7 @@ ln -s ~/webui/styles.csv styles.csv
 
 <br />
 
-## How to Use:
+## How to Use
 
 ![menu](menu.png)
 
@@ -95,14 +95,25 @@ name_v1_author [keyword1, keyword2] [keyword3, keyword4] (suggested model) {weig
 ```
 
 Or simply:
-```
-My-LoRA.safetensors
-```
+`My-LoRA.safetensors`
 
 and a matching file of the same name ending in **.jpeg** (e.g. ```My-LoRA.jpeg```) in the same folder for the preview.  Max height is auto-sized to 336px, width is auto centered at a max 224px.
 
-#### Additional Images
+Examples:
+```
+api/networks/Lora/My-LoRA.safetensors  # LoRA
+api/networks/Lora/My-LoRA.jpeg  # LoRA thumbnail image
+
+api/networks/Lora/Another-LoRA.safetensors  # LoRA
+api/networks/Lora/Another-LoRA.jpeg  # LoRA thumbnail image
+
+api/networks/Checkpoints/My-Merge.safetensors  # Model Checkpoint
+api/networks/Checkpoints/My-Merge.jpeg  # Model thumbnail image
+
+```
+
 <a id="modal"></a>
+#### Additional Images Modal
 *Option 1:*<br/>
 Saving additional images as `My-LoRA. (1).jpeg`, `My-LoRA. (2).jpeg` and so on will populate a modal gallery popup.  You can then navigate to the prev / next network card with the left / right arrow keys while the modal is open.
 
@@ -112,9 +123,30 @@ To quickly rename a batch of images in this pattern in Windows, select multiple 
 Make additional subfolders with the same name as the model, and place .jpegs inside with any name you'd like.<br/>
 e.g. `api/networks/lora/My-LoRA/file123.jpeg`
 
-Finally, you can add a `filename.txt` file in the same folder for a quick info modal.  Great for storing descriptions, notes, and sample prompts.  You can switch between the modal gallery and the modal notes with the up / down arrow keys while the modal is open.
+<br />
+
+#### Adding Notes
+You can add a `filename.txt` file in the same folder for a quick info modal.  Great for storing descriptions, notes, and sample prompts.  You can switch between the modal gallery and the modal notes with the up / down arrow keys while the modal is open.
 
 **Note: Use the full matching filename, minus extension, of the related model/item.**
+
+Examples:
+```
+api/networks/Lora/My-LoRA.safetensors  # LoRA
+api/networks/Lora/My-LoRA.jpeg  # LoRA thumbnail image
+api/networks/Lora/My-LoRA. (2).jpeg  # Additional Modal image
+api/networks/Lora/My-LoRA. (3).jpeg  # Additional Modal image
+api/networks/Lora/My-LoRA.txt  # Description file
+
+# Alternatively: #
+
+api/networks/Lora/My-LoRA.safetensors  # LoRA
+api/networks/Lora/My-LoRA.jpeg  # LoRA thumbnail image
+api/networks/Lora/My-LoRA/img1.jpeg  # Additional Modal image
+api/networks/Lora/My-LoRA/img2.jpeg  # Additional Modal image
+api/networks/Lora/My-LoRA.txt  # Description file
+
+```
 
 <br />
 
@@ -134,39 +166,38 @@ magick mogrify -format jpeg *.png
 
 <br />
 
-## Examples:
+## Advanced Naming
 
 ![howto gif](howto.gif)
 
 ---
 
 <a id="keywords"></a>
-### the LoRA / image pair:
+#### the LoRA / image pair:
 
 `api/networks/lora/example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8}.safetensors`<br />
 `api/networks/lora/example-lora_v1_johndoe [mylora] [anotherkeyword] (RevAnimated) {0.7-0.8}.jpeg`
 
 will copy to the clipboard:
 
-`mylora, anotherkeyword <lora:my-lora_v1_johndoe [mylora, anotherkeyword] (RevAnimated) {0.7-0.8} #style:0.8>`
+`mylora, anotherkeyword <lora:my-lora_v1_johndoe [mylora, anotherkeyword] (RevAnimated) {0.7-0.8}:0.8>`
 
 with the needed ***keywords and suggested weight ready to go!***
 
 This is based on my personal naming preferences and has worked well for managing a large collection.<br />
 If you choose to follow a different naming convention without keywords or weights, the program will still simply copy ```<lora:LoraName:1.0>``` to the clipboard.
 
----
+<br />
 
 <a id="weights"></a>
-### Another example, Keywords with Weights:
+#### Keywords with Weights
 
-`api/networks/lora/example-lora_v1_johndoe [anotherlora, watercolor (medium), (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0}.safetensors`
-
-`api/networks/lora/example-lora_v1_johndoe [anotherlora, watercolor (medium), (awesome©️1.4}] [anotherkeyword] (RevAnimated) {1.0}.jpeg`
+`api/networks/lora/example-lora_v1_johndoe [mylora] [watercolor (medium), (awesome©️1.4}] (RevAnimated) {1.0}.safetensors`
+`api/networks/lora/example-lora_v1_johndoe [mylora] [watercolor (medium), (awesome©️1.4}] (RevAnimated) {1.0}.jpeg`
 
 Will copy to the clipboard:
 
-`anotherlora, watercolor \(medium\), (awesome:1.4), anotherkeyword <lora:nother-lora_v1_johndoe [anotherlora, (awesome:1.4}] [anotherkeyword] (RevAnimated) {1.0}:1.0>`
+`mylora, watercolor \(medium\), (awesome:1.4) <lora:example-lora_v1_johndoe [mylora] [watercolor (medium), (awesome©️1.4}] (RevAnimated) {1.0}:1.0>`
 
 Note the ( )'s are escaped as needed on non-weights, and ©️ is replaced by : (because : can't be in a filename).  I've found this very useful when dealing with keywords that have suggested weights.
 
@@ -178,7 +209,7 @@ Without a weight or range, it will default to :1.0.
 
 ## Misc
 
-### Other Networks:
+### Other Networks
 
 Hypernetworks will copy the keywords, name, and weight using the formats above:
 
@@ -196,7 +227,7 @@ then press enter.
 ---
 
 <a id="styles"></a>
-### Styles:
+### Styles
 
 Some LoRA have multiple possible characters, outfits, or activations attached.  Managing all of this in the filename is impractical, and sometimes impossible due to filename length limits.
 
@@ -230,7 +261,7 @@ In this example, your matching image files in `api/networks/styles` would be:
 ---
 
 <a id="poses"></a>
-### Poses:
+### Poses
 
 The Poses tab ("P") is designed to work with OpenPose images used with ControlNet.  In this tab, you can manage examples of those poses for easy browing.
 
@@ -238,13 +269,13 @@ This tab works somewhat differently than the model tabs, in that it looks for im
 I've tried to somewhat match the format of many zipped packs I've seen, and as such I recommend the following folder structure:
 
 ```
-/api/poses/<pose>/
-/api/poses/<posefolder>/pose1.png
-/api/poses/<posefolder>/pose2.png
-/api/poses/<posefolder>/OpenPose/pose1.png   #optional
-/api/poses/<posefolder>/OpenPose/pose2.png   #optional
-/api/poses/<posefolder>/Depth/pose1.png      #optional
-/api/poses/<posefolder>/Canny/pose2.png      #optional
+/api/networks/poses/<pose>/
+/api/networks/poses/<posefolder>/pose1.png
+/api/networks/poses/<posefolder>/pose2.png
+/api/networks/poses/<posefolder>/OpenPose/pose1.png   #optional
+/api/networks/poses/<posefolder>/OpenPose/pose2.png   #optional
+/api/networks/poses/<posefolder>/Depth/pose1.png      #optional
+/api/networks/poses/<posefolder>/Canny/pose2.png      #optional
 ```
 
 The structure here is:
@@ -259,7 +290,7 @@ For best compatibility this tab uses **.png** instead of **.jpeg**.
 ---
 
 <a id="gallery"></a>
-### Gallery:
+### Gallery
 
 The Gallery tab ("G") looks for *subfolders* inside the `api/networks/gallery/` folder and displays a card for each, using a .jpeg matching the folder name in the `/gallery`.
 Examples:
@@ -275,7 +306,7 @@ api/networks/gallery/testing-images/dog.jpeg   # Gallery folder with images
 ```
 
 <a id="search"></a>
-## Advanced Search:
+## Advanced Search
 Searching in field at the top will filter the results of the tab you are in: LoRAs / Models / Styles / Gallery, and etc.
 
 You can further drill-down to the *"additional images"* in the [modal gallery](#modal) using a **`>`** character followed by a filename found *inside* of one of the results
